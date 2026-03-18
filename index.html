@@ -1,225 +1,326 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Harsen Schmidt — Portfolio</title>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap');
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Harsen Schmidt</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap');
 
-    :root {
-      --font:       "Avenir Next", "Avenir", "Nunito", sans-serif;
-      --w-medium:   500;
-      --w-regular:  400;
-      --w-light:    300;
+/* ── RESET & VARS ──────────────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --font:"Avenir Next","Avenir","Nunito",sans-serif;
+  --w-m:500; --w-r:400; --w-l:300;
+  --ink:#111; --paper:#fff; --muted:#999;
+  --hh:60px; --pad:60px;
+}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--font);
+  font-weight:var(--w-r);
+  overflow-x:hidden;
+  cursor:none;
+  -webkit-font-smoothing:antialiased;
+}
 
-      --col-bg:     #ffffff;
-      --col-text:   #111111;
-      --col-muted:  #888888;
-      --col-border: #e4e4e4;
+/* ── CUSTOM CURSOR ─────────────────────────────────────────── */
+#cursor{
+  position:fixed;
+  width:10px; height:10px;
+  background:var(--ink);
+  border-radius:50%;
+  pointer-events:none;
+  z-index:9999;
+  transform:translate(-50%,-50%);
+  transition:transform .12s ease, width .25s ease, height .25s ease, background .2s ease, border-radius .25s ease;
+  will-change:transform;
+}
+#cursor.big{
+  width:56px; height:56px;
+  background:transparent;
+  border:1.5px solid var(--ink);
+  border-radius:50%;
+}
+#cursor.text-mode{
+  width:2px; height:28px;
+  border-radius:1px;
+  background:var(--ink);
+}
+#cursor.link-mode{
+  width:44px; height:44px;
+  background:var(--ink);
+  mix-blend-mode:difference;
+  border-radius:50%;
+}
 
-      --hh:         64px;
-      --pad:        72px;
-      --split:      65%;
-    }
+/* ── HEADER ────────────────────────────────────────────────── */
+header{
+  position:fixed; top:0; left:0; right:0;
+  height:var(--hh); z-index:100;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:0 var(--pad);
+  background:rgba(255,255,255,.96);
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+}
+.logo img{height:26px; width:auto; display:block;}
+.logo-fallback{font-weight:var(--w-m); font-size:12px; letter-spacing:.1em; text-transform:uppercase;}
 
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
-    body {
-      background: var(--col-bg);
-      color: var(--col-text);
-      font-family: var(--font);
-      font-weight: var(--w-regular);
-      overflow-x: hidden;
-      -webkit-font-smoothing: antialiased;
-    }
+/* ── BURGER ────────────────────────────────────────────────── */
+.burger{
+  cursor:none; display:flex; flex-direction:column;
+  gap:5px; padding:6px; z-index:200;
+  -webkit-tap-highlight-color:transparent;
+}
+.burger span{
+  display:block; width:22px; height:1.5px;
+  background:var(--ink);
+  transition:transform .3s, opacity .3s;
+}
+.burger.open span:nth-child(1){transform:translateY(6.5px) rotate(45deg);}
+.burger.open span:nth-child(2){opacity:0;}
+.burger.open span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg);}
 
-    /* ── HEADER ─────────────────────────────────────────────── */
-    header {
-      position: fixed; top: 0; left: 0; right: 0;
-      height: var(--hh); z-index: 100;
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 0 var(--pad);
-      background: rgba(255,255,255,0.94);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-    }
-    .logo img { height: 28px; width: auto; display: block; }
-    .logo-fallback {
-      font-weight: var(--w-medium); font-size: 13px;
-      letter-spacing: 0.06em; text-transform: uppercase;
-    }
+/* ── NAV PANEL ─────────────────────────────────────────────── */
+.nav-panel{
+  position:fixed;
+  top:calc(var(--hh) + 8px); right:var(--pad);
+  background:var(--paper); border:1px solid #e0e0e0;
+  padding:18px 28px;
+  display:flex; flex-direction:column; align-items:flex-start;
+  z-index:150;
+  opacity:0; transform:translateY(-6px); pointer-events:none;
+  transition:opacity .2s ease, transform .2s ease;
+}
+.nav-panel.open{opacity:1; transform:translateY(0); pointer-events:auto;}
+.nav-panel a{
+  display:block; font-weight:var(--w-r); font-size:13px;
+  color:var(--ink); text-decoration:none;
+  line-height:1; margin-bottom:14px; white-space:nowrap;
+  position:relative;
+}
+.nav-panel a:last-child{margin-bottom:0;}
+.nav-panel a::after{
+  content:''; position:absolute; bottom:-2px; left:0;
+  width:0; height:1px; background:var(--ink);
+  transition:width .22s ease;
+}
+.nav-panel a:hover::after{width:100%;}
 
-    /* ── BURGER ─────────────────────────────────────────────── */
-    .burger {
-      cursor: pointer; display: flex; flex-direction: column;
-      gap: 5px; padding: 6px; z-index: 200;
-      -webkit-tap-highlight-color: transparent;
-    }
-    .burger span {
-      display: block; width: 24px; height: 1.5px;
-      background: var(--col-text);
-      transition: transform .3s, opacity .3s;
-    }
-    .burger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
-    .burger.open span:nth-child(2) { opacity: 0; }
-    .burger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+/* ── OVERLAY ───────────────────────────────────────────────── */
+.overlay{position:fixed; inset:0; pointer-events:none; z-index:140;}
+.overlay.active{pointer-events:auto;}
 
-    /* ── NAV DROPDOWN ───────────────────────────────────────── */
-    .nav-panel {
-      position: fixed;
-      top: calc(var(--hh) + 6px); right: var(--pad);
-      background: #fff; border: 1px solid var(--col-border);
-      display: flex; flex-direction: column; align-items: flex-start;
-      padding: 16px 24px 18px;
-      z-index: 150;
-      opacity: 0; transform: translateY(-6px); pointer-events: none;
-      transition: opacity .22s ease, transform .22s ease;
-    }
-    .nav-panel.open { opacity: 1; transform: translateY(0); pointer-events: auto; }
-    .nav-panel a {
-      display: block;
-      font-weight: var(--w-regular); font-size: 14px;
-      color: var(--col-text); text-decoration: none;
-      line-height: 1; margin-bottom: 14px; white-space: nowrap;
-      position: relative;
-    }
-    .nav-panel a:last-child { margin-bottom: 0; }
-    .nav-panel a::after {
-      content: ''; position: absolute; bottom: -2px; left: 0;
-      width: 0; height: 1px; background: var(--col-text);
-      transition: width .22s ease;
-    }
-    .nav-panel a:hover::after { width: 100%; }
+/* ── MAIN ──────────────────────────────────────────────────── */
+main{padding-top:var(--hh);}
 
-    /* ── OVERLAY ────────────────────────────────────────────── */
-    .overlay { position: fixed; inset: 0; pointer-events: none; z-index: 140; }
-    .overlay.active { pointer-events: auto; }
+/* ── HERO SPLIT ────────────────────────────────────────────── */
+.hero{min-height:100vh; display:flex;}
+.hero-left{
+  width:65%; padding:90px var(--pad);
+  display:flex; flex-direction:column; justify-content:center;
+}
+.hero-right{
+  width:35%; position:sticky; top:var(--hh);
+  height:calc(100vh - var(--hh));
+  border-left:1px solid #e8e8e8;
+  overflow:hidden;
+}
+.preview-area{
+  width:100%; height:100%; position:relative;
+  display:flex; align-items:center; justify-content:center;
+}
+.preview-area img{
+  position:absolute; max-width:88%; max-height:80%;
+  object-fit:contain; opacity:0;
+  transition:opacity .4s ease;
+}
+.preview-area img.visible{opacity:1;}
 
-    /* ── MAIN ───────────────────────────────────────────────── */
-    main { padding-top: var(--hh); }
+/* ── BIG NAME ──────────────────────────────────────────────── */
+.big-name{
+  font-weight:var(--w-m);
+  font-size:clamp(48px,5.8vw,86px);
+  letter-spacing:-.03em; line-height:.95;
+  margin-bottom:52px;
+  cursor:none; user-select:none;
+  overflow:hidden;
+}
+.big-name .word{display:inline-block; white-space:nowrap; overflow:hidden;}
+.big-name .word+.word{margin-left:.28em;}
+.big-name .letter{
+  display:inline-block;
+  transition:transform .35s cubic-bezier(.22,1,.36,1),
+             font-weight .35s ease,
+             font-style .35s ease,
+             letter-spacing .35s ease;
+  will-change:transform;
+}
 
-    /* ── HERO ───────────────────────────────────────────────── */
-    .hero { min-height: 100vh; display: flex; }
-    .hero-left {
-      width: var(--split); padding: 80px var(--pad);
-      display: flex; flex-direction: column; justify-content: center;
-    }
-    .hero-right {
-      width: calc(100% - var(--split));
-      position: sticky; top: var(--hh);
-      height: calc(100vh - var(--hh));
-      border-left: 1px solid var(--col-border);
-      overflow: hidden;
-    }
-    .preview-area {
-      width: 100%; height: 100%;
-      position: relative; display: flex;
-      align-items: center; justify-content: center;
-    }
-    .preview-area img {
-      position: absolute;
-      max-width: 88%; max-height: 78%;
-      object-fit: contain; opacity: 0;
-      transition: opacity .35s ease;
-    }
-    .preview-area img.visible { opacity: 1; }
+/* ── BIO ───────────────────────────────────────────────────── */
+.bio{
+  font-weight:var(--w-r); font-size:15px;
+  line-height:1.85; max-width:440px;
+  overflow-wrap:break-word;
+}
+.bio .word-wrap{display:inline-block; white-space:pre-wrap; overflow-wrap:break-word; vertical-align:top;}
+.bio .bword{
+  display:inline-block;
+  transition:transform .3s cubic-bezier(.22,1,.36,1), opacity .3s ease;
+  white-space:pre;
+}
+.bio .bword.lifted{
+  transform:translateY(-4px);
+  opacity:.4;
+}
+.bio .bword.space{white-space:pre;}
+.bio .nl{display:block; margin-top:.55em;}
 
-    /* ── BIG NAME ───────────────────────────────────────────── */
-    .big-name {
-      font-weight: var(--w-medium);
-      font-size: clamp(44px, 5.5vw, 80px);
-      letter-spacing: -0.02em; line-height: 1;
-      margin-bottom: 40px;
-      cursor: default; user-select: none;
-    }
-    .big-name .letter {
-      display: inline-block;
-      transition: font-weight .18s, font-style .18s;
-      cursor: pointer;
-    }
-    .big-name .space { display: inline-block; width: .28em; }
+/* ── SCROLL HINT ───────────────────────────────────────────── */
+.scroll-hint{
+  margin-top:56px;
+  display:flex; align-items:center; gap:12px;
+  font-weight:var(--w-l); font-size:11px;
+  letter-spacing:.18em; text-transform:uppercase; color:var(--muted);
+  opacity:0; animation:fadeIn .6s .8s forwards;
+}
+.scroll-line{
+  width:40px; height:1px; background:var(--muted);
+  animation:scrollLine 2.5s 1s ease-in-out infinite;
+  transform-origin:left;
+}
+@keyframes scrollLine{
+  0%{transform:scaleX(0); opacity:0;}
+  30%,70%{transform:scaleX(1); opacity:1;}
+  100%{transform:scaleX(0) translateX(40px); opacity:0;}
+}
+@keyframes fadeIn{to{opacity:1;}}
 
-    /* ── BIO ────────────────────────────────────────────────── */
-    .bio {
-      font-weight: var(--w-regular);
-      font-size: 15px; line-height: 1.8;
-      max-width: 460px;
-      overflow-wrap: break-word;
-    }
-    .bio .char { display: inline-block; }
-    .bio .char.inv { color: #fff; background: #111; }
-    .bio .nl { display: block; margin-top: .6em; }
+/* ── PROJECTS SECTION ──────────────────────────────────────── */
+#projets{display:flex; padding:100px 0 160px;}
+.projects-left{width:65%; padding:0 var(--pad);}
+.projects-right{
+  width:35%; border-left:1px solid #e8e8e8;
+  position:sticky; top:var(--hh);
+  height:calc(100vh - var(--hh));
+  overflow:hidden;
+  display:flex; align-items:center; justify-content:center;
+}
+.section-label{
+  font-weight:var(--w-l); font-size:10px;
+  letter-spacing:.22em; text-transform:uppercase;
+  color:var(--muted); margin-bottom:48px;
+}
 
-    /* ── PROJECTS SECTION ───────────────────────────────────── */
-    #projets { display: flex; padding: 100px 0 140px; }
-    .projects-left { width: var(--split); padding: 0 var(--pad); }
-    .projects-right {
-      width: calc(100% - var(--split));
-      border-left: 1px solid var(--col-border);
-    }
+/* ── PROJECT ITEM ──────────────────────────────────────────── */
+.project-item{
+  padding:8px 0; cursor:none;
+  position:relative;
+}
+.project-header{
+  display:flex; align-items:baseline;
+  justify-content:space-between; gap:16px;
+}
+.project-title{
+  font-weight:var(--w-m);
+  font-size:clamp(17px,1.7vw,21px);
+  letter-spacing:-.01em; line-height:1.3;
+  position:relative; display:inline-block;
+  /* magnetic underline */
+}
+.project-title::after{
+  content:''; position:absolute; bottom:-1px; left:0;
+  width:0; height:1px; background:var(--ink);
+  transition:width .4s cubic-bezier(.77,0,.175,1);
+}
+.project-item:hover .project-title::after{width:100%;}
+.project-date{
+  font-weight:var(--w-m);
+  font-size:clamp(17px,1.7vw,21px);
+  letter-spacing:-.01em; white-space:nowrap; flex-shrink:0;
+}
+.project-sub{
+  margin-top:2px;
+  font-weight:var(--w-l); font-size:11px;
+  color:var(--muted); line-height:1.4;
+}
 
-    .section-label {
-      font-weight: var(--w-light); font-size: 10px;
-      letter-spacing: .22em; text-transform: uppercase;
-      color: var(--col-muted); margin-bottom: 48px;
-    }
+/* ── MARQUEE (hidden — shows on project hover) ─────────────── */
+.marquee-wrap{
+  position:fixed; bottom:0; left:0; right:0;
+  height:36px; overflow:hidden;
+  pointer-events:none; z-index:50;
+  opacity:0; transition:opacity .3s ease;
+}
+.marquee-wrap.visible{opacity:1;}
+.marquee-inner{
+  display:flex; white-space:nowrap;
+  animation:marquee 8s linear infinite;
+}
+.marquee-inner span{
+  font-weight:var(--w-l); font-size:11px;
+  letter-spacing:.15em; text-transform:uppercase;
+  color:var(--ink); opacity:.5;
+  padding:9px 24px 0 24px;
+  border-top:1px solid #e0e0e0;
+  background:var(--paper);
+  flex-shrink:0;
+}
+@keyframes marquee{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
 
-    /* ── PROJECT ITEM ───────────────────────────────────────── */
-    .project-item { padding: 7px 0; cursor: pointer; }
-    .project-header {
-      display: flex; align-items: baseline;
-      justify-content: space-between; gap: 12px;
-    }
-    .project-title {
-      font-weight: var(--w-medium);
-      font-size: clamp(16px, 1.6vw, 20px);
-      letter-spacing: -.01em; line-height: 1.3;
-      position: relative;
-    }
-    .project-title::after {
-      content: ''; position: absolute; bottom: -2px; left: 0;
-      width: 0; height: 1px; background: var(--col-text);
-      transition: width .32s cubic-bezier(.77,0,.175,1);
-    }
-    .project-item:hover .project-title::after { width: 100%; }
-    .project-date {
-      font-weight: var(--w-medium);
-      font-size: clamp(16px, 1.6vw, 20px);
-      letter-spacing: -.01em; white-space: nowrap; flex-shrink: 0;
-    }
-    .project-sub {
-      margin-top: 2px;
-      font-weight: var(--w-light); font-size: 11px;
-      color: var(--col-muted); line-height: 1.4;
-    }
+/* ── PAGE INTRO ANIMATION ─────────────────────────────────── */
+.intro-line{
+  overflow:hidden; display:block;
+}
+.intro-word{
+  display:inline-block;
+  animation:wordIn .7s cubic-bezier(.22,1,.36,1) both;
+}
+@keyframes wordIn{
+  from{transform:translateY(110%); opacity:0;}
+  to{transform:translateY(0); opacity:1;}
+}
 
-    /* ══ MOBILE ═════════════════════════════════════════════ */
-    @media (max-width: 768px) {
-      :root { --pad: 24px; --hh: 56px; }
-
-      .hero { flex-direction: column; min-height: auto; }
-      .hero-left { width: 100%; padding: 48px var(--pad) 56px; justify-content: flex-start; }
-      .hero-right { display: none; }
-
-      .big-name { font-size: clamp(36px, 11vw, 52px); margin-bottom: 24px; }
-      .bio { font-size: 14px; max-width: 100%; }
-
-      #projets { flex-direction: column; padding: 60px 0 80px; }
-      .projects-left { width: 100%; padding: 0 var(--pad); }
-      .projects-right { display: none; }
-
-      .project-title, .project-date { font-size: 16px; }
-      .section-label { margin-bottom: 28px; }
-
-      .nav-panel { right: var(--pad); top: calc(var(--hh) + 6px); }
-    }
-  </style>
+/* ══ MOBILE ═══════════════════════════════════════════════════ */
+@media(max-width:768px){
+  :root{--pad:24px; --hh:56px;}
+  body{cursor:auto;}
+  #cursor{display:none;}
+  .hero{flex-direction:column; min-height:auto;}
+  .hero-left{width:100%; padding:48px var(--pad) 56px; justify-content:flex-start;}
+  .hero-right{display:none;}
+  .big-name{font-size:clamp(36px,11vw,52px); margin-bottom:28px;}
+  .bio{font-size:14px; max-width:100%;}
+  #projets{flex-direction:column; padding:60px 0 80px;}
+  .projects-left{width:100%; padding:0 var(--pad);}
+  .projects-right{display:none;}
+  .project-item{cursor:pointer;}
+  .project-title,.project-date{font-size:16px;}
+  .section-label{margin-bottom:28px;}
+  .nav-panel{right:var(--pad); top:calc(var(--hh)+6px);}
+  .scroll-hint{display:none;}
+}
+</style>
 </head>
 <body>
 
+<!-- CUSTOM CURSOR -->
+<div id="cursor"></div>
+
+<!-- OVERLAY -->
 <div class="overlay" id="overlay"></div>
 
+<!-- MARQUEE -->
+<div class="marquee-wrap" id="marquee">
+  <div class="marquee-inner" id="marqueeInner">
+    <span id="mq1"></span><span id="mq2"></span>
+  </div>
+</div>
+
+<!-- HEADER -->
 <header>
   <div class="logo">
     <img src="logo.png" alt="Harsen Schmidt"
@@ -231,6 +332,7 @@
   </div>
 </header>
 
+<!-- NAV -->
 <nav class="nav-panel" id="navPanel">
   <a href="#projets" class="nav-link" data-page="projets">Projets</a>
   <a href="contact.html" class="nav-link">Contact</a>
@@ -239,114 +341,154 @@
 
 <main>
 
+  <!-- HERO -->
   <section class="hero" id="home">
     <div class="hero-left">
       <h1 class="big-name" id="bigName" aria-label="Harsen Schmidt"></h1>
       <p class="bio" id="bioText"></p>
+      <div class="scroll-hint">
+        <span class="scroll-line"></span>
+        <span>Défiler</span>
+      </div>
     </div>
     <aside class="hero-right">
       <div class="preview-area" id="previewArea"></div>
     </aside>
   </section>
 
+  <!-- PROJETS -->
   <section id="projets">
     <div class="projects-left">
       <p class="section-label">Projets</p>
       <div id="projectList"></div>
     </div>
-    <aside class="projects-right" id="projectsRight"></aside>
+    <aside class="projects-right" id="projectsRight">
+      <div class="preview-area" id="previewArea2"></div>
+    </aside>
   </section>
 
 </main>
 
 <script>
-// ── DATA ────────────────────────────────────────────────────
+/* ── DATA ──────────────────────────────────────────────────── */
 const PROJECTS = [
-  { id:1, title:"Larmes de crocodile",                     date:"2025",      sub:"Affiche de théâtre",                                                                               img:"img/project1.jpg", page:"larmes-de-crocodile.html" },
-  { id:2, title:"Mouvement de la typographie et rotation", date:"2026",      sub:"Corpus de recherches",                                                                             img:"img/project2.jpg", page:"mouvement-typographie.html" },
-  { id:3, title:"Carte de visite",                         date:"2026",      sub:"",                                                                                                 img:"img/project3.jpg", page:"carte-de-visite.html" },
-  { id:4, title:"Du visible au lisible",                   date:"2025/2026", sub:"Réaliser la médiation d'une exposition\u00a0: Affiche\u00a0/ catalogue\u00a0/ objet de médiation",  img:"img/project4.jpg", page:"du-visible-au-lisible.html" },
-  { id:5, title:"Clerestory typographie",                  date:"2025",      sub:"Typographie modulaire",                                                                             img:"img/project5.jpg", page:"clerestory-typographie.html" },
-  { id:6, title:"3251W typographie",                       date:"2025",      sub:"Typographie modulaire",                                                                             img:"img/project6.jpg", page:"3251w-typographie.html" },
+  {id:1,title:"Larmes de crocodile",          date:"2025",      sub:"Affiche de théâtre",                                                                                    img:"img/project1.jpg",page:"larmes-de-crocodile.html"},
+  {id:2,title:"Mouvement de la typographie et rotation",date:"2026",sub:"Corpus de recherches",                                                                              img:"img/project2.jpg",page:"mouvement-typographie.html"},
+  {id:3,title:"Carte de visite",               date:"2026",      sub:"",                                                                                                     img:"img/project3.jpg",page:"carte-de-visite.html"},
+  {id:4,title:"Du visible au lisible",         date:"2025/2026", sub:"Réaliser la médiation d'une exposition\u00a0: Affiche\u00a0/ catalogue\u00a0/ objet de médiation",      img:"img/project4.jpg",page:"du-visible-au-lisible.html"},
+  {id:5,title:"Clerestory typographie",        date:"2025",      sub:"Typographie modulaire",                                                                                 img:"img/project5.jpg",page:"clerestory-typographie.html"},
+  {id:6,title:"3251W typographie",             date:"2025",      sub:"Typographie modulaire",                                                                                 img:"img/project6.jpg",page:"3251w-typographie.html"},
 ];
 
-// ── BURGER ──────────────────────────────────────────────────
+/* ── CUSTOM CURSOR ─────────────────────────────────────────── */
+const cur = document.getElementById('cursor');
+let mx=0, my=0, cx=0, cy=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX; my=e.clientY;});
+(function raf(){
+  cx+=(mx-cx)*.18; cy+=(my-cy)*.18;
+  cur.style.left=cx+'px'; cur.style.top=cy+'px';
+  requestAnimationFrame(raf);
+})();
+
+/* big cursor on hoverable items */
+document.querySelectorAll('a,.burger,.nav-panel a,.project-item').forEach(el=>{
+  el.addEventListener('mouseenter',()=>cur.classList.add('link-mode'));
+  el.addEventListener('mouseleave',()=>cur.classList.remove('link-mode'));
+});
+
+/* text cursor over bio */
+document.getElementById('bioText').addEventListener('mouseenter',()=>cur.classList.add('text-mode'));
+document.getElementById('bioText').addEventListener('mouseleave',()=>cur.classList.remove('text-mode'));
+
+/* ── BURGER / NAV ──────────────────────────────────────────── */
 const burger   = document.getElementById('burger');
 const navPanel = document.getElementById('navPanel');
 const overlay  = document.getElementById('overlay');
-
-function toggleNav(force) {
-  const open = force !== undefined ? force : !burger.classList.contains('open');
-  burger.classList.toggle('open', open);
-  navPanel.classList.toggle('open', open);
-  overlay.classList.toggle('active', open);
+function toggleNav(f){
+  const open=f!==undefined?f:!burger.classList.contains('open');
+  burger.classList.toggle('open',open);
+  navPanel.classList.toggle('open',open);
+  overlay.classList.toggle('active',open);
 }
-burger.addEventListener('click', () => toggleNav());
-overlay.addEventListener('click', () => toggleNav(false));
-document.querySelectorAll('.nav-link').forEach(link => {
-  link.addEventListener('click', e => {
-    if (link.dataset.page === 'projets') {
-      e.preventDefault();
-      toggleNav(false);
-      document.getElementById('projets').scrollIntoView({ behavior: 'smooth' });
-    } else {
-      toggleNav(false);
-    }
+burger.addEventListener('click',()=>toggleNav());
+overlay.addEventListener('click',()=>toggleNav(false));
+document.querySelectorAll('.nav-link').forEach(l=>{
+  l.addEventListener('click',e=>{
+    if(l.dataset.page==='projets'){
+      e.preventDefault(); toggleNav(false);
+      document.getElementById('projets').scrollIntoView({behavior:'smooth'});
+    } else toggleNav(false);
   });
 });
 
-// ── BIG NAME — variants: regular / medium / light ± italic ──
-const VARIANTS = [
-  { w:'300', s:'normal' },
-  { w:'300', s:'italic' },
-  { w:'400', s:'normal' },
-  { w:'400', s:'italic' },
-  { w:'500', s:'italic' },
+/* ── BIG NAME — letter morph on hover ─────────────────────── */
+const LETTER_VARIANTS=[
+  {w:'300',s:'normal'},
+  {w:'300',s:'italic'},
+  {w:'400',s:'italic'},
+  {w:'500',s:'italic'},
+  {w:'400',s:'normal'},
 ];
-function buildName() {
-  const el = document.getElementById('bigName');
-  el.innerHTML = '';
-  [...'Harsen Schmidt'].forEach(ch => {
-    if (ch === ' ') {
-      const sp = document.createElement('span');
-      sp.className = 'space'; el.appendChild(sp);
-    } else {
-      const s = document.createElement('span');
-      s.className = 'letter'; s.textContent = ch;
-      s.addEventListener('click', () => {
-        const v = VARIANTS[Math.floor(Math.random() * VARIANTS.length)];
-        s.style.fontWeight = v.w; s.style.fontStyle = v.s;
+
+function buildName(){
+  const el=document.getElementById('bigName');
+  el.innerHTML='';
+  const words="Harsen Schmidt".split(' ');
+  words.forEach((word,wi)=>{
+    if(wi>0){const sp=document.createElement('span');sp.className='space';sp.style.display='inline-block';sp.style.width='.28em';el.appendChild(sp);}
+    const ww=document.createElement('span'); ww.className='word intro-line';
+    word.split('').forEach((ch,ci)=>{
+      const s=document.createElement('span');
+      s.className='letter intro-word';
+      s.style.animationDelay=(wi*word.length+ci)*.04+'s';
+      s.textContent=ch;
+      /* hover: letter floats + changes weight */
+      s.addEventListener('mouseenter',()=>{
+        s.style.transform='translateY(-8px)';
+        s.style.fontWeight='300';
+        s.style.fontStyle='italic';
+        s.style.letterSpacing='.04em';
       });
-      el.appendChild(s);
-    }
+      s.addEventListener('mouseleave',()=>{
+        s.style.transform='';
+        s.style.fontWeight='';
+        s.style.fontStyle='';
+        s.style.letterSpacing='';
+      });
+      /* click: random permanent variant */
+      s.addEventListener('click',()=>{
+        const v=LETTER_VARIANTS[Math.floor(Math.random()*LETTER_VARIANTS.length)];
+        s.style.fontWeight=v.w; s.style.fontStyle=v.s;
+      });
+      ww.appendChild(s);
+    });
+    el.appendChild(ww);
   });
 }
 buildName();
 
-// ── BIO — anti-orphan: glue short words (≤4 chars) to prev ──
-function antiOrphan(text) {
-  // Any space followed by a word of 1-4 chars then a space → nbsp + word
-  return text.replace(/ (\S{1,4}) /g, (m, w) => '\u00a0' + w + ' ');
-}
-function buildBio() {
-  const el = document.getElementById('bioText');
-  el.innerHTML = '';
-  const raw = [
+/* ── BIO — word lift on hover, anti-orphan ─────────────────── */
+function antiOrphan(t){return t.replace(/ (\S{1,4}) /g,(_,w)=>'\u00a0'+w+' ');}
+
+function buildBio(){
+  const el=document.getElementById('bioText');
+  el.innerHTML='';
+  const raw=[
     "Je suis étudiant en deuxième année de design graphique à l'Initiative Paris, à travers ce site je souhaite vous présenter les projets que j'ai pu réaliser et qui me tiennent à cœur ainsi que mon univers et ce qui me plaît dans le graphisme.",
     "Je vous souhaite une bonne visite\u00a0:)"
   ];
-  raw.forEach((line, li) => {
-    if (li > 0) {
-      const nl = document.createElement('span');
-      nl.className = 'nl'; el.appendChild(nl);
-    }
-    [...antiOrphan(line)].forEach(ch => {
-      const s = document.createElement('span');
-      s.className = 'char';
-      s.textContent = ch === ' ' ? '\u00a0' : ch;
-      s.addEventListener('mouseover', () => {
-        s.classList.add('inv');
-        setTimeout(() => s.classList.remove('inv'), 500);
+  raw.forEach((line,li)=>{
+    if(li>0){const nl=document.createElement('span');nl.className='nl';el.appendChild(nl);}
+    const fixed=antiOrphan(line);
+    const words=fixed.split(' ');
+    words.forEach((w,i)=>{
+      if(i>0){const sp=document.createElement('span');sp.className='bword space';sp.textContent=' ';el.appendChild(sp);}
+      const s=document.createElement('span');
+      s.className='bword';
+      s.textContent=w;
+      s.addEventListener('mouseenter',()=>{
+        s.classList.add('lifted');
+        setTimeout(()=>s.classList.remove('lifted'),400);
       });
       el.appendChild(s);
     });
@@ -354,55 +496,83 @@ function buildBio() {
 }
 buildBio();
 
-// ── PROJECTS ────────────────────────────────────────────────
-function buildProjects() {
-  const list    = document.getElementById('projectList');
-  const preview = document.getElementById('previewArea');
-  const imgs    = {};
-  PROJECTS.forEach(p => {
-    const img = document.createElement('img');
-    img.src = p.img; img.alt = p.title;
-    preview.appendChild(img); imgs[p.id] = img;
+/* ── PROJECTS ──────────────────────────────────────────────── */
+function buildProjects(){
+  const list=document.getElementById('projectList');
+  const pa1=document.getElementById('previewArea');
+  const pa2=document.getElementById('projectsRight').querySelector('.preview-area');
+  const imgs1={}, imgs2={};
+
+  PROJECTS.forEach(p=>{
+    [pa1,pa2].forEach((pa,idx)=>{
+      const img=document.createElement('img');
+      img.src=p.img; img.alt=p.title;
+      pa.appendChild(img);
+      if(idx===0) imgs1[p.id]=img; else imgs2[p.id]=img;
+    });
   });
-  let cur = null;
-  const mob = () => window.innerWidth <= 768;
 
-  PROJECTS.forEach(p => {
-    const item = document.createElement('div');
-    item.className = 'project-item';
+  const marquee=document.getElementById('marquee');
+  const mq1=document.getElementById('mq1');
+  const mq2=document.getElementById('mq2');
+  let curImg1=null, curImg2=null;
+  const mob=()=>window.innerWidth<=768;
 
-    const hdr = document.createElement('div');
-    hdr.className = 'project-header';
+  PROJECTS.forEach(p=>{
+    const item=document.createElement('div');
+    item.className='project-item';
 
-    const title = document.createElement('span');
-    title.className = 'project-title'; title.textContent = p.title;
+    const hdr=document.createElement('div');
+    hdr.className='project-header';
 
-    const date = document.createElement('span');
-    date.className = 'project-date'; date.textContent = p.date;
+    const title=document.createElement('span');
+    title.className='project-title'; title.textContent=p.title;
+
+    const date=document.createElement('span');
+    date.className='project-date'; date.textContent=p.date;
 
     hdr.appendChild(title); hdr.appendChild(date); item.appendChild(hdr);
 
-    if (p.sub) {
-      const sub = document.createElement('p');
-      sub.className = 'project-sub'; sub.textContent = p.sub;
-      item.appendChild(sub);
+    if(p.sub){
+      const sub=document.createElement('p');
+      sub.className='project-sub'; sub.textContent=p.sub; item.appendChild(sub);
     }
 
-    item.addEventListener('mouseenter', () => {
-      if (mob()) return;
-      if (cur) cur.classList.remove('visible');
-      cur = imgs[p.id]; cur.classList.add('visible');
+    item.addEventListener('mouseenter',()=>{
+      if(mob()) return;
+      if(curImg1) curImg1.classList.remove('visible');
+      if(curImg2) curImg2.classList.remove('visible');
+      curImg1=imgs1[p.id]; curImg2=imgs2[p.id];
+      curImg1.classList.add('visible'); curImg2.classList.add('visible');
+      /* marquee */
+      const txt=(p.title+' — '+p.date+'    ').repeat(6);
+      mq1.textContent=txt; mq2.textContent=txt;
+      marquee.classList.add('visible');
+      /* cursor big circle */
+      cur.classList.add('big');
     });
-    item.addEventListener('mouseleave', () => {
-      if (mob()) return;
-      if (cur) cur.classList.remove('visible'); cur = null;
+    item.addEventListener('mouseleave',()=>{
+      if(mob()) return;
+      if(curImg1) curImg1.classList.remove('visible');
+      if(curImg2) curImg2.classList.remove('visible');
+      curImg1=null; curImg2=null;
+      marquee.classList.remove('visible');
+      cur.classList.remove('big');
     });
-    item.addEventListener('click', () => { window.location.href = p.page; });
+    item.addEventListener('click',()=>{ window.location.href=p.page; });
 
     list.appendChild(item);
   });
 }
 buildProjects();
+
+/* ── SCROLL — name parallax ────────────────────────────────── */
+window.addEventListener('scroll',()=>{
+  const y=window.scrollY;
+  const name=document.getElementById('bigName');
+  name.style.transform=`translateY(${y*.12}px)`;
+  name.style.opacity=Math.max(0,1-y/420);
+},{ passive:true });
 </script>
 </body>
 </html>
