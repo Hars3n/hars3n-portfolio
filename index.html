@@ -22,20 +22,22 @@ body{
   -webkit-font-smoothing:antialiased;
 }
 
+/* CURSOR */
 #cursor{
   position:fixed;width:10px;height:10px;
   background:var(--ink);border-radius:50%;
   pointer-events:none;z-index:9999;
   transform:translate(-50%,-50%);
-  transition:transform .12s ease,width .25s ease,height .25s ease,background .2s ease,border-radius .25s ease;
-  will-change:transform;
+  transition:width .25s ease,height .25s ease,background .2s ease,border-radius .25s ease;
+  will-change:left,top;
 }
 #cursor.big{width:56px;height:56px;background:transparent;border:1.5px solid var(--ink);border-radius:50%;}
 #cursor.text-mode{width:2px;height:28px;border-radius:1px;background:var(--ink);}
 #cursor.link-mode{width:44px;height:44px;background:var(--ink);mix-blend-mode:difference;border-radius:50%;}
 
+/* HEADER */
 header{
-  position:fixed;top:0;left:0;right:0;height:var(--hh);z-index:100;
+  position:fixed;top:0;left:0;right:0;height:var(--hh);z-index:500;
   display:flex;align-items:center;justify-content:space-between;
   padding:0 var(--pad);
   background:rgba(255,255,255,.96);
@@ -44,17 +46,19 @@ header{
 .logo img{height:26px;width:auto;display:block;}
 .logo-fallback{font-weight:var(--w-m);font-size:12px;letter-spacing:.1em;text-transform:uppercase;}
 
-.burger{cursor:none;display:flex;flex-direction:column;gap:5px;padding:6px;z-index:200;-webkit-tap-highlight-color:transparent;}
+/* BURGER */
+.burger{cursor:none;display:flex;flex-direction:column;gap:5px;padding:6px;z-index:600;-webkit-tap-highlight-color:transparent;}
 .burger span{display:block;width:22px;height:1.5px;background:var(--ink);transition:transform .3s,opacity .3s;}
 .burger.open span:nth-child(1){transform:translateY(6.5px) rotate(45deg);}
 .burger.open span:nth-child(2){opacity:0;}
 .burger.open span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg);}
 
+/* NAV */
 .nav-panel{
   position:fixed;top:calc(var(--hh) + 8px);right:var(--pad);
   background:var(--paper);border:1px solid #e0e0e0;
   padding:18px 28px;display:flex;flex-direction:column;align-items:flex-start;
-  z-index:150;opacity:0;transform:translateY(-6px);pointer-events:none;
+  z-index:550;opacity:0;transform:translateY(-6px);pointer-events:none;
   transition:opacity .2s ease,transform .2s ease;
 }
 .nav-panel.open{opacity:1;transform:translateY(0);pointer-events:auto;}
@@ -63,35 +67,67 @@ header{
 .nav-panel a::after{content:'';position:absolute;bottom:-2px;left:0;width:0;height:1px;background:var(--ink);transition:width .22s ease;}
 .nav-panel a:hover::after{width:100%;}
 
+/* OVERLAY */
 .overlay{position:fixed;inset:0;pointer-events:none;z-index:140;}
 .overlay.active{pointer-events:auto;}
 
+/* MAIN */
 main{padding-top:var(--hh);}
 
-.hero{min-height:100vh;display:flex;}
-.hero-left{width:65%;padding:90px var(--pad);display:flex;flex-direction:column;justify-content:center;}
-.hero-right{width:35%;position:sticky;top:var(--hh);height:calc(100vh - var(--hh));overflow:hidden;}
-
-.preview-area{width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;}
-.preview-area > img{
-  position:absolute;max-width:88%;max-height:80%;
-  object-fit:contain;opacity:0;transition:opacity .4s ease;
+/* ── FIXED PREVIEW PANEL ───────────────────────────────────── */
+/* Sits fixed on the right half of the screen, vertically centered */
+#previewPanel{
+  position:fixed;
+  top:50%;right:0;
+  width:38%;
+  transform:translateY(-50%);
+  display:flex;align-items:center;justify-content:center;
+  pointer-events:none;
+  z-index:200;
 }
-.preview-area > img.visible{opacity:1;}
-.preview-area .custom-preview{
-  position:absolute;width:88%;opacity:0;
+#previewInner{
+  width:82%;
+  opacity:0;
   transition:opacity .4s ease;
-  display:flex;flex-direction:column;align-items:center;gap:10px;
 }
-.preview-area .custom-preview.visible{opacity:1;}
-.preview-area .custom-preview img{
-  position:static !important;
-  opacity:1 !important;
-  max-width:100% !important;
-  max-height:none !important;
-  object-fit:cover;
+#previewInner.visible{opacity:1;}
+
+/* standard single image */
+#previewInner > img{
+  width:100%;
+  object-fit:contain;
+  max-height:70vh;
+  display:block;
 }
 
+/* custom 3251W layout */
+#previewInner .custom-wrap{
+  display:flex;flex-direction:column;gap:10px;width:100%;
+}
+#previewInner .custom-wrap .top-img{
+  width:100%;object-fit:cover;aspect-ratio:16/9;display:block;
+}
+#previewInner .custom-wrap .portrait-row{
+  display:flex;gap:10px;width:100%;
+}
+#previewInner .custom-wrap .portrait-row img{
+  width:50%;object-fit:cover;aspect-ratio:3/4;display:block;
+}
+#previewInner .custom-wrap .caption{
+  font-size:11px;font-weight:300;color:#111;
+  text-align:center;line-height:1.7;
+}
+#previewInner .custom-wrap .caption a{
+  display:block;margin-top:4px;color:#111;
+  text-decoration:underline;text-underline-offset:3px;
+  pointer-events:auto;
+}
+
+/* HERO — full width, no right column */
+.hero{min-height:100vh;display:flex;align-items:center;}
+.hero-left{width:60%;padding:90px var(--pad);display:flex;flex-direction:column;justify-content:center;}
+
+/* BIG NAME */
 .big-name{
   font-weight:var(--w-m);
   font-size:clamp(48px,5.8vw,86px);
@@ -105,11 +141,13 @@ main{padding-top:var(--hh);}
   will-change:transform;
 }
 
+/* BIO */
 .bio{font-weight:var(--w-r);font-size:clamp(18px,1.9vw,24px);line-height:1.7;max-width:520px;overflow-wrap:break-word;}
 .bio .bchar{display:inline-block;transition:transform .25s cubic-bezier(.22,1,.36,1),opacity .25s ease;}
 .bio .bchar.lifted{transform:translateY(-5px);opacity:.22;}
 .bio .nl{display:block;margin-top:.55em;}
 
+/* SCROLL HINT */
 .scroll-hint{
   margin-top:56px;display:inline-flex;align-items:center;gap:12px;
   font-weight:var(--w-l);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);
@@ -119,6 +157,7 @@ main{padding-top:var(--hh);}
 @keyframes scrollLine{0%{transform:scaleX(0);opacity:0;}30%,70%{transform:scaleX(1);opacity:1;}100%{transform:scaleX(0) translateX(40px);opacity:0;}}
 @keyframes fadeIn{to{opacity:1;}}
 
+/* INFO BLOCK */
 .info-block{
   margin-top:64px;font-weight:var(--w-l);font-size:12px;
   line-height:1.9;color:var(--muted);letter-spacing:.01em;
@@ -128,11 +167,12 @@ main{padding-top:var(--hh);}
 .info-block a::after{content:'';position:absolute;bottom:0;left:0;width:0;height:1px;background:var(--muted);transition:width .22s ease;}
 .info-block a:hover::after{width:100%;}
 
-#projets{display:flex;padding:100px 0 160px;}
-.projects-left{width:65%;padding:0 var(--pad);}
-.projects-right{width:35%;position:sticky;top:var(--hh);height:calc(100vh - var(--hh));overflow:hidden;display:flex;align-items:center;justify-content:center;}
+/* PROJECTS SECTION */
+#projets{padding:100px 0 160px;}
+.projects-inner{width:60%;padding:0 var(--pad);}
 .section-label{font-weight:var(--w-l);font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);margin-bottom:48px;}
 
+/* PROJECT ITEM */
 .project-item{padding:8px 0;cursor:none;position:relative;}
 .project-header{display:flex;align-items:baseline;justify-content:space-between;gap:16px;}
 .project-title{font-weight:var(--w-m);font-size:clamp(17px,1.7vw,21px);letter-spacing:-.01em;line-height:1.3;position:relative;display:inline-block;}
@@ -141,34 +181,30 @@ main{padding-top:var(--hh);}
 .project-date{font-weight:var(--w-m);font-size:clamp(17px,1.7vw,21px);letter-spacing:-.01em;white-space:nowrap;flex-shrink:0;}
 .project-sub{margin-top:2px;font-weight:var(--w-l);font-size:11px;color:var(--muted);line-height:1.4;}
 
+/* MARQUEE */
 .marquee-wrap{position:fixed;bottom:0;left:0;right:0;height:36px;overflow:hidden;pointer-events:none;z-index:50;opacity:0;transition:opacity .3s ease;}
 .marquee-wrap.visible{opacity:1;}
 .marquee-inner{display:flex;white-space:nowrap;animation:marquee 8s linear infinite;}
 .marquee-inner span{font-weight:var(--w-l);font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:var(--ink);opacity:.5;padding:9px 24px 0 24px;border-top:1px solid #e0e0e0;background:var(--paper);flex-shrink:0;}
 @keyframes marquee{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
 
+/* INTRO ANIM */
 .intro-line{overflow:hidden;display:block;}
 .intro-word{display:inline-block;animation:wordIn .7s cubic-bezier(.22,1,.36,1) both;}
 @keyframes wordIn{from{transform:translateY(110%);opacity:0;}to{transform:translateY(0);opacity:1;}}
 
-.preview-3251w-top{width:100%;object-fit:cover;aspect-ratio:16/9;}
-.preview-3251w-row{display:flex;gap:10px;width:100%;}
-.preview-3251w-row img{width:50%;object-fit:cover;aspect-ratio:3/4;}
-.preview-3251w-text{font-size:11px;font-weight:300;color:#111;text-align:center;line-height:1.7;margin-top:4px;}
-.preview-3251w-text a{display:block;margin-top:4px;color:#111;text-decoration:underline;text-underline-offset:3px;}
-
+/* MOBILE */
 @media(max-width:768px){
   :root{--pad:24px;--hh:56px;}
   body{cursor:auto;}
   #cursor{display:none;}
-  .hero{flex-direction:column;min-height:auto;}
-  .hero-left{width:100%;padding:48px var(--pad) 56px;justify-content:flex-start;}
-  .hero-right{display:none;}
+  #previewPanel{display:none;}
+  .hero{min-height:auto;}
+  .hero-left{width:100%;padding:48px var(--pad) 56px;}
   .big-name{font-size:clamp(36px,11vw,52px);margin-bottom:28px;}
   .bio{font-size:17px;max-width:100%;}
-  #projets{flex-direction:column;padding:60px 0 80px;}
-  .projects-left{width:100%;padding:0 var(--pad);}
-  .projects-right{display:none;}
+  #projets{padding:60px 0 80px;}
+  .projects-inner{width:100%;padding:0 var(--pad);}
   .project-item{cursor:pointer;}
   .project-title,.project-date{font-size:16px;}
   .section-label{margin-bottom:28px;}
@@ -183,6 +219,12 @@ main{padding-top:var(--hh);}
 <div id="cursor"></div>
 <div class="overlay" id="overlay"></div>
 
+<!-- FIXED PREVIEW PANEL (unique, centré à droite, fixe au scroll) -->
+<div id="previewPanel">
+  <div id="previewInner"></div>
+</div>
+
+<!-- MARQUEE -->
 <div class="marquee-wrap" id="marquee">
   <div class="marquee-inner">
     <span id="mq1"></span><span id="mq2"></span>
@@ -220,19 +262,13 @@ main{padding-top:var(--hh);}
         <a href="mailto:Harsen.schmidtk95@gmail.com">Harsen.schmidtk95@gmail.com</a> – <a href="https://instagram.com/hars.3n" target="_blank">@hars.3n</a>
       </div>
     </div>
-    <aside class="hero-right">
-      <div class="preview-area" id="previewArea"></div>
-    </aside>
   </section>
 
   <section id="projets">
-    <div class="projects-left">
+    <div class="projects-inner">
       <p class="section-label">Projets</p>
       <div id="projectList"></div>
     </div>
-    <aside class="projects-right" id="projectsRight">
-      <div class="preview-area" id="previewArea2"></div>
-    </aside>
   </section>
 </main>
 
@@ -323,70 +359,81 @@ document.getElementById('bioText').addEventListener('mouseenter',function(){cur.
 document.getElementById('bioText').addEventListener('mouseleave',function(){cur.classList.remove('text-mode');});
 document.getElementById('scrollHint').addEventListener('click',function(e){e.preventDefault();document.getElementById('projets').scrollIntoView({behavior:'smooth'});});
 
-/* PROJECTS */
+/* PREVIEW PANEL — construit les contenus une fois, les swape au hover */
+var previewInner = document.getElementById('previewInner');
+var marqueeEl = document.getElementById('marquee');
+var mq1 = document.getElementById('mq1');
+var mq2 = document.getElementById('mq2');
+
+/* Pré-construire un élément de preview par projet */
+var previewEls = {};
+PROJECTS.forEach(function(p){
+  if(p.id === 6){
+    var wrap = document.createElement('div');
+    wrap.className = 'custom-wrap';
+
+    var topImg = document.createElement('img');
+    topImg.src = '3152W-4.jpg';
+    topImg.alt = '3251W';
+    topImg.className = 'top-img';
+
+    var row = document.createElement('div');
+    row.className = 'portrait-row';
+    var pm1 = document.createElement('img');pm1.src='3152W-5.jpg';pm1.alt='';
+    var pm2 = document.createElement('img');pm2.src='3152W-6.jpg';pm2.alt='';
+    row.appendChild(pm1);row.appendChild(pm2);
+
+    var cap = document.createElement('p');
+    cap.className = 'caption';
+    cap.innerHTML = '3152W est une typographie modulaire inspir\u00e9 de l\'architecture des \u00e9glises romanes<br><a href="3251w-typographie.html">D\u00e9couvrir le projet</a>';
+
+    wrap.appendChild(topImg);wrap.appendChild(row);wrap.appendChild(cap);
+    previewEls[p.id] = wrap;
+  } else {
+    var img = document.createElement('img');
+    img.src = p.img;
+    img.alt = p.title;
+    previewEls[p.id] = img;
+  }
+});
+
+function showPreview(p){
+  previewInner.innerHTML = '';
+  previewInner.appendChild(previewEls[p.id]);
+  previewInner.classList.add('visible');
+  var t = (p.title + ' \u2014 ' + p.date + '    ').repeat(6);
+  mq1.textContent = t; mq2.textContent = t;
+  marqueeEl.classList.add('visible');
+  cur.classList.add('big');
+}
+function hidePreview(){
+  previewInner.classList.remove('visible');
+  marqueeEl.classList.remove('visible');
+  cur.classList.remove('big');
+}
+
+/* PROJECTS LIST */
 function buildProjects(){
-  var list=document.getElementById('projectList');
-  var pa1=document.getElementById('previewArea');
-  var pa2=document.getElementById('previewArea2');
-  var marqueeEl=document.getElementById('marquee');
-  var mq1=document.getElementById('mq1');
-  var mq2=document.getElementById('mq2');
-  var imgs1={},imgs2={};
-  function mob(){return window.innerWidth<=768;}
+  var list = document.getElementById('projectList');
+  var mob = function(){return window.innerWidth<=768;};
 
   PROJECTS.forEach(function(p){
-    if(p.id===6){
-      [pa1,pa2].forEach(function(pa,idx){
-        var wrap=document.createElement('div');wrap.className='custom-preview';
-        var top=document.createElement('img');top.src='3152W-4.jpg';top.alt='3251W';top.className='preview-3251w-top';
-        var row=document.createElement('div');row.className='preview-3251w-row';
-        var m1=document.createElement('img');m1.src='3152W-5.jpg';m1.alt='';
-        var m2=document.createElement('img');m2.src='3152W-6.jpg';m2.alt='';
-        row.appendChild(m1);row.appendChild(m2);
-        var txt=document.createElement('p');txt.className='preview-3251w-text';
-        txt.innerHTML='3152W est une typographie modulaire inspir\u00e9 de l\'architecture des \u00e9glises romanes<br><a href="3251w-typographie.html">D\u00e9couvrir le projet</a>';
-        wrap.appendChild(top);wrap.appendChild(row);wrap.appendChild(txt);
-        pa.appendChild(wrap);
-        if(idx===0){imgs1[p.id]=wrap;}else{imgs2[p.id]=wrap;}
-      });
-    } else {
-      [pa1,pa2].forEach(function(pa,idx){
-        var img=document.createElement('img');img.src=p.img;img.alt=p.title;
-        pa.appendChild(img);
-        if(idx===0){imgs1[p.id]=img;}else{imgs2[p.id]=img;}
-      });
-    }
-  });
-
-  var cur1=null,cur2=null;
-  PROJECTS.forEach(function(p){
-    var item=document.createElement('div');item.className='project-item';
-    var hdr=document.createElement('div');hdr.className='project-header';
-    var title=document.createElement('span');title.className='project-title';title.textContent=p.title;
-    var date=document.createElement('span');date.className='project-date';date.textContent=p.date;
+    var item = document.createElement('div');item.className='project-item';
+    var hdr = document.createElement('div');hdr.className='project-header';
+    var title = document.createElement('span');title.className='project-title';title.textContent=p.title;
+    var date = document.createElement('span');date.className='project-date';date.textContent=p.date;
     hdr.appendChild(title);hdr.appendChild(date);item.appendChild(hdr);
     if(p.sub){var sub=document.createElement('p');sub.className='project-sub';sub.textContent=p.sub;item.appendChild(sub);}
 
     item.addEventListener('mouseenter',function(){
       if(mob())return;
       cur.classList.add('link-mode');
-      if(cur1)cur1.classList.remove('visible');
-      if(cur2)cur2.classList.remove('visible');
-      cur1=imgs1[p.id];cur2=imgs2[p.id];
-      cur1.classList.add('visible');cur2.classList.add('visible');
-      var t=(p.title+' \u2014 '+p.date+'    ').repeat(6);
-      mq1.textContent=t;mq2.textContent=t;
-      marqueeEl.classList.add('visible');
-      cur.classList.add('big');
+      showPreview(p);
     });
     item.addEventListener('mouseleave',function(){
       if(mob())return;
       cur.classList.remove('link-mode');
-      if(cur1)cur1.classList.remove('visible');
-      if(cur2)cur2.classList.remove('visible');
-      cur1=null;cur2=null;
-      marqueeEl.classList.remove('visible');
-      cur.classList.remove('big');
+      hidePreview();
     });
     item.addEventListener('click',function(){window.location.href=p.page;});
     list.appendChild(item);
@@ -401,10 +448,10 @@ buildProjects();
 
 /* SCROLL parallax */
 window.addEventListener('scroll',function(){
-  var y=window.scrollY;
-  var name=document.getElementById('bigName');
-  name.style.transform='translateY('+(y*.12)+'px)';
-  name.style.opacity=Math.max(0,1-y/420);
+  var y = window.scrollY;
+  var name = document.getElementById('bigName');
+  name.style.transform = 'translateY('+(y*.12)+'px)';
+  name.style.opacity = Math.max(0,1-y/420);
 },{passive:true});
 </script>
 </body>
