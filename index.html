@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Harsen Schmidt — Portfolio</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap');
+
+    :root {
+      --font:       "Avenir Next", "Avenir", "Nunito", sans-serif;
+      --w-medium:   500;
+      --w-regular:  400;
+      --w-light:    300;
+
+      --col-bg:     #ffffff;
+      --col-text:   #111111;
+      --col-muted:  #888888;
+      --col-border: #e4e4e4;
+
+      --hh:         64px;
+      --pad:        72px;
+      --split:      65%;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--col-bg);
+      color: var(--col-text);
+      font-family: var(--font);
+      font-weight: var(--w-regular);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── HEADER ─────────────────────────────────────────────── */
+    header {
+      position: fixed; top: 0; left: 0; right: 0;
+      height: var(--hh); z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 var(--pad);
+      background: rgba(255,255,255,0.94);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    .logo img { height: 28px; width: auto; display: block; }
+    .logo-fallback {
+      font-weight: var(--w-medium); font-size: 13px;
+      letter-spacing: 0.06em; text-transform: uppercase;
+    }
+
+    /* ── BURGER ─────────────────────────────────────────────── */
+    .burger {
+      cursor: pointer; display: flex; flex-direction: column;
+      gap: 5px; padding: 6px; z-index: 200;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .burger span {
+      display: block; width: 24px; height: 1.5px;
+      background: var(--col-text);
+      transition: transform .3s, opacity .3s;
+    }
+    .burger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+    .burger.open span:nth-child(2) { opacity: 0; }
+    .burger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+    /* ── NAV DROPDOWN ───────────────────────────────────────── */
+    .nav-panel {
+      position: fixed;
+      top: calc(var(--hh) + 6px); right: var(--pad);
+      background: #fff; border: 1px solid var(--col-border);
+      display: flex; flex-direction: column; align-items: flex-start;
+      padding: 16px 24px 18px;
+      z-index: 150;
+      opacity: 0; transform: translateY(-6px); pointer-events: none;
+      transition: opacity .22s ease, transform .22s ease;
+    }
+    .nav-panel.open { opacity: 1; transform: translateY(0); pointer-events: auto; }
+    .nav-panel a {
+      display: block;
+      font-weight: var(--w-regular); font-size: 14px;
+      color: var(--col-text); text-decoration: none;
+      line-height: 1; margin-bottom: 14px; white-space: nowrap;
+      position: relative;
+    }
+    .nav-panel a:last-child { margin-bottom: 0; }
+    .nav-panel a::after {
+      content: ''; position: absolute; bottom: -2px; left: 0;
+      width: 0; height: 1px; background: var(--col-text);
+      transition: width .22s ease;
+    }
+    .nav-panel a:hover::after { width: 100%; }
+
+    /* ── OVERLAY ────────────────────────────────────────────── */
+    .overlay { position: fixed; inset: 0; pointer-events: none; z-index: 140; }
+    .overlay.active { pointer-events: auto; }
+
+    /* ── MAIN ───────────────────────────────────────────────── */
+    main { padding-top: var(--hh); }
+
+    /* ── HERO ───────────────────────────────────────────────── */
+    .hero { min-height: 100vh; display: flex; }
+    .hero-left {
+      width: var(--split); padding: 80px var(--pad);
+      display: flex; flex-direction: column; justify-content: center;
+    }
+    .hero-right {
+      width: calc(100% - var(--split));
+      position: sticky; top: var(--hh);
+      height: calc(100vh - var(--hh));
+      border-left: 1px solid var(--col-border);
+      overflow: hidden;
+    }
+    .preview-area {
+      width: 100%; height: 100%;
+      position: relative; display: flex;
+      align-items: center; justify-content: center;
+    }
+    .preview-area img {
+      position: absolute;
+      max-width: 88%; max-height: 78%;
+      object-fit: contain; opacity: 0;
+      transition: opacity .35s ease;
+    }
+    .preview-area img.visible { opacity: 1; }
+
+    /* ── BIG NAME ───────────────────────────────────────────── */
+    .big-name {
+      font-weight: var(--w-medium);
+      font-size: clamp(44px, 5.5vw, 80px);
+      letter-spacing: -0.02em; line-height: 1;
+      margin-bottom: 40px;
+      cursor: default; user-select: none;
+    }
+    .big-name .letter {
+      display: inline-block;
+      transition: font-weight .18s, font-style .18s;
+      cursor: pointer;
+    }
+    .big-name .space { display: inline-block; width: .28em; }
+
+    /* ── BIO ────────────────────────────────────────────────── */
+    .bio {
+      font-weight: var(--w-regular);
+      font-size: 15px; line-height: 1.8;
+      max-width: 460px;
+      overflow-wrap: break-word;
+    }
+    .bio .char { display: inline-block; }
+    .bio .char.inv { color: #fff; background: #111; }
+    .bio .nl { display: block; margin-top: .6em; }
+
+    /* ── PROJECTS SECTION ───────────────────────────────────── */
+    #projets { display: flex; padding: 100px 0 140px; }
+    .projects-left { width: var(--split); padding: 0 var(--pad); }
+    .projects-right {
+      width: calc(100% - var(--split));
+      border-left: 1px solid var(--col-border);
+    }
+
+    .section-label {
+      font-weight: var(--w-light); font-size: 10px;
+      letter-spacing: .22em; text-transform: uppercase;
+      color: var(--col-muted); margin-bottom: 48px;
+    }
+
+    /* ── PROJECT ITEM ───────────────────────────────────────── */
+    .project-item { padding: 7px 0; cursor: pointer; }
+    .project-header {
+      display: flex; align-items: baseline;
+      justify-content: space-between; gap: 12px;
+    }
+    .project-title {
+      font-weight: var(--w-medium);
+      font-size: clamp(16px, 1.6vw, 20px);
+      letter-spacing: -.01em; line-height: 1.3;
+      position: relative;
+    }
+    .project-title::after {
+      content: ''; position: absolute; bottom: -2px; left: 0;
+      width: 0; height: 1px; background: var(--col-text);
+      transition: width .32s cubic-bezier(.77,0,.175,1);
+    }
+    .project-item:hover .project-title::after { width: 100%; }
+    .project-date {
+      font-weight: var(--w-medium);
+      font-size: clamp(16px, 1.6vw, 20px);
+      letter-spacing: -.01em; white-space: nowrap; flex-shrink: 0;
+    }
+    .project-sub {
+      margin-top: 2px;
+      font-weight: var(--w-light); font-size: 11px;
+      color: var(--col-muted); line-height: 1.4;
+    }
+
+    /* ══ MOBILE ═════════════════════════════════════════════ */
+    @media (max-width: 768px) {
+      :root { --pad: 24px; --hh: 56px; }
+
+      .hero { flex-direction: column; min-height: auto; }
+      .hero-left { width: 100%; padding: 48px var(--pad) 56px; justify-content: flex-start; }
+      .hero-right { display: none; }
+
+      .big-name { font-size: clamp(36px, 11vw, 52px); margin-bottom: 24px; }
+      .bio { font-size: 14px; max-width: 100%; }
+
+      #projets { flex-direction: column; padding: 60px 0 80px; }
+      .projects-left { width: 100%; padding: 0 var(--pad); }
+      .projects-right { display: none; }
+
+      .project-title, .project-date { font-size: 16px; }
+      .section-label { margin-bottom: 28px; }
+
+      .nav-panel { right: var(--pad); top: calc(var(--hh) + 6px); }
+    }
+  </style>
+</head>
+<body>
+
+<div class="overlay" id="overlay"></div>
+
+<header>
+  <div class="logo">
+    <img src="logo.png" alt="Harsen Schmidt"
+         onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+    <span class="logo-fallback" style="display:none">HS</span>
+  </div>
+  <div class="burger" id="burger" role="button" tabindex="0" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </div>
+</header>
+
+<nav class="nav-panel" id="navPanel">
+  <a href="#projets" class="nav-link" data-page="projets">Projets</a>
+  <a href="contact.html" class="nav-link">Contact</a>
+  <a href="galerie.html" class="nav-link">Gallerie</a>
+</nav>
+
+<main>
+
+  <section class="hero" id="home">
+    <div class="hero-left">
+      <h1 class="big-name" id="bigName" aria-label="Harsen Schmidt"></h1>
+      <p class="bio" id="bioText"></p>
+    </div>
+    <aside class="hero-right">
+      <div class="preview-area" id="previewArea"></div>
+    </aside>
+  </section>
+
+  <section id="projets">
+    <div class="projects-left">
+      <p class="section-label">Projets</p>
+      <div id="projectList"></div>
+    </div>
+    <aside class="projects-right" id="projectsRight"></aside>
+  </section>
+
+</main>
+
+<script>
+// ── DATA ────────────────────────────────────────────────────
+const PROJECTS = [
+  { id:1, title:"Larmes de crocodile",                     date:"2025",      sub:"Affiche de théâtre",                                                                               img:"img/project1.jpg", page:"larmes-de-crocodile.html" },
+  { id:2, title:"Mouvement de la typographie et rotation", date:"2026",      sub:"Corpus de recherches",                                                                             img:"img/project2.jpg", page:"mouvement-typographie.html" },
+  { id:3, title:"Carte de visite",                         date:"2026",      sub:"",                                                                                                 img:"img/project3.jpg", page:"carte-de-visite.html" },
+  { id:4, title:"Du visible au lisible",                   date:"2025/2026", sub:"Réaliser la médiation d'une exposition\u00a0: Affiche\u00a0/ catalogue\u00a0/ objet de médiation",  img:"img/project4.jpg", page:"du-visible-au-lisible.html" },
+  { id:5, title:"Clerestory typographie",                  date:"2025",      sub:"Typographie modulaire",                                                                             img:"img/project5.jpg", page:"clerestory-typographie.html" },
+  { id:6, title:"3251W typographie",                       date:"2025",      sub:"Typographie modulaire",                                                                             img:"img/project6.jpg", page:"3251w-typographie.html" },
+];
+
+// ── BURGER ──────────────────────────────────────────────────
+const burger   = document.getElementById('burger');
+const navPanel = document.getElementById('navPanel');
+const overlay  = document.getElementById('overlay');
+
+function toggleNav(force) {
+  const open = force !== undefined ? force : !burger.classList.contains('open');
+  burger.classList.toggle('open', open);
+  navPanel.classList.toggle('open', open);
+  overlay.classList.toggle('active', open);
+}
+burger.addEventListener('click', () => toggleNav());
+overlay.addEventListener('click', () => toggleNav(false));
+document.querySelectorAll('.nav-link').forEach(link => {
+  link.addEventListener('click', e => {
+    if (link.dataset.page === 'projets') {
+      e.preventDefault();
+      toggleNav(false);
+      document.getElementById('projets').scrollIntoView({ behavior: 'smooth' });
+    } else {
+      toggleNav(false);
+    }
+  });
+});
+
+// ── BIG NAME — variants: regular / medium / light ± italic ──
+const VARIANTS = [
+  { w:'300', s:'normal' },
+  { w:'300', s:'italic' },
+  { w:'400', s:'normal' },
+  { w:'400', s:'italic' },
+  { w:'500', s:'italic' },
+];
+function buildName() {
+  const el = document.getElementById('bigName');
+  el.innerHTML = '';
+  [...'Harsen Schmidt'].forEach(ch => {
+    if (ch === ' ') {
+      const sp = document.createElement('span');
+      sp.className = 'space'; el.appendChild(sp);
+    } else {
+      const s = document.createElement('span');
+      s.className = 'letter'; s.textContent = ch;
+      s.addEventListener('click', () => {
+        const v = VARIANTS[Math.floor(Math.random() * VARIANTS.length)];
+        s.style.fontWeight = v.w; s.style.fontStyle = v.s;
+      });
+      el.appendChild(s);
+    }
+  });
+}
+buildName();
+
+// ── BIO — anti-orphan: glue short words (≤4 chars) to prev ──
+function antiOrphan(text) {
+  // Any space followed by a word of 1-4 chars then a space → nbsp + word
+  return text.replace(/ (\S{1,4}) /g, (m, w) => '\u00a0' + w + ' ');
+}
+function buildBio() {
+  const el = document.getElementById('bioText');
+  el.innerHTML = '';
+  const raw = [
+    "Je suis étudiant en deuxième année de design graphique à l'Initiative Paris, à travers ce site je souhaite vous présenter les projets que j'ai pu réaliser et qui me tiennent à cœur ainsi que mon univers et ce qui me plaît dans le graphisme.",
+    "Je vous souhaite une bonne visite\u00a0:)"
+  ];
+  raw.forEach((line, li) => {
+    if (li > 0) {
+      const nl = document.createElement('span');
+      nl.className = 'nl'; el.appendChild(nl);
+    }
+    [...antiOrphan(line)].forEach(ch => {
+      const s = document.createElement('span');
+      s.className = 'char';
+      s.textContent = ch === ' ' ? '\u00a0' : ch;
+      s.addEventListener('mouseover', () => {
+        s.classList.add('inv');
+        setTimeout(() => s.classList.remove('inv'), 500);
+      });
+      el.appendChild(s);
+    });
+  });
+}
+buildBio();
+
+// ── PROJECTS ────────────────────────────────────────────────
+function buildProjects() {
+  const list    = document.getElementById('projectList');
+  const preview = document.getElementById('previewArea');
+  const imgs    = {};
+  PROJECTS.forEach(p => {
+    const img = document.createElement('img');
+    img.src = p.img; img.alt = p.title;
+    preview.appendChild(img); imgs[p.id] = img;
+  });
+  let cur = null;
+  const mob = () => window.innerWidth <= 768;
+
+  PROJECTS.forEach(p => {
+    const item = document.createElement('div');
+    item.className = 'project-item';
+
+    const hdr = document.createElement('div');
+    hdr.className = 'project-header';
+
+    const title = document.createElement('span');
+    title.className = 'project-title'; title.textContent = p.title;
+
+    const date = document.createElement('span');
+    date.className = 'project-date'; date.textContent = p.date;
+
+    hdr.appendChild(title); hdr.appendChild(date); item.appendChild(hdr);
+
+    if (p.sub) {
+      const sub = document.createElement('p');
+      sub.className = 'project-sub'; sub.textContent = p.sub;
+      item.appendChild(sub);
+    }
+
+    item.addEventListener('mouseenter', () => {
+      if (mob()) return;
+      if (cur) cur.classList.remove('visible');
+      cur = imgs[p.id]; cur.classList.add('visible');
+    });
+    item.addEventListener('mouseleave', () => {
+      if (mob()) return;
+      if (cur) cur.classList.remove('visible'); cur = null;
+    });
+    item.addEventListener('click', () => { window.location.href = p.page; });
+
+    list.appendChild(item);
+  });
+}
+buildProjects();
+</script>
+</body>
+</html>
