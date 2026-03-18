@@ -497,7 +497,10 @@ function buildName(){
 buildName();
 
 /* ── BIO — letter lift on hover, anti-orphan ───────────────── */
-function antiOrphan(t){return t.replace(/ (\S{1,4}) /g,(_,w)=>'\u00a0'+w+' ');}
+function antiOrphan(t){
+  // Glue short words (≤4 chars) to the preceding word with nbsp
+  return t.replace(/ (\S{1,4})(?= )/g,(_,w)=>'\u00a0'+w);
+}
 
 function buildBio(){
   const el=document.getElementById('bioText');
@@ -506,22 +509,35 @@ function buildBio(){
     "Je suis étudiant en deuxième année de design graphique à l'Initiative Paris, à travers ce site je souhaite vous présenter les projets que j'ai pu réaliser et qui me tiennent à cœur ainsi que mon univers et ce qui me plaît dans le graphisme.",
     "Je vous souhaite une bonne visite\u00a0:)"
   ];
+
   raw.forEach((line,li)=>{
-    if(li>0){const nl=document.createElement('span');nl.className='nl';el.appendChild(nl);}
-    const fixed=antiOrphan(line);
-    [...fixed].forEach(ch=>{
-      if(ch===' '){
-        const sp=document.createTextNode('\u00a0');
-        el.appendChild(sp); return;
-      }
-      const s=document.createElement('span');
-      s.className='bchar';
-      s.textContent=ch;
-      s.addEventListener('mouseenter',()=>{
-        s.classList.add('lifted');
-        setTimeout(()=>s.classList.remove('lifted'),350);
+    if(li>0){
+      const nl=document.createElement('span');
+      nl.className='nl'; el.appendChild(nl);
+    }
+    // Split on real spaces only — nbsp stays glued to its word
+    const words=antiOrphan(line).split(' ');
+    words.forEach((word,wi)=>{
+      // Space between words — a plain text node, allows line-break here
+      if(wi>0) el.appendChild(document.createTextNode(' '));
+
+      // Wrap the word in an inline-block span so letters stay together
+      const wordSpan=document.createElement('span');
+      wordSpan.style.cssText='display:inline-block; white-space:nowrap;';
+
+      // Each character gets its own interactive span
+      [...word].forEach(ch=>{
+        const s=document.createElement('span');
+        s.className='bchar';
+        s.textContent=ch;
+        s.addEventListener('mouseenter',()=>{
+          s.classList.add('lifted');
+          setTimeout(()=>s.classList.remove('lifted'),350);
+        });
+        wordSpan.appendChild(s);
       });
-      el.appendChild(s);
+
+      el.appendChild(wordSpan);
     });
   });
 }
