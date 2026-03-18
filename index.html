@@ -138,6 +138,12 @@ main{padding-top:var(--hh);}
   transition:opacity .4s ease;
 }
 .preview-area img.visible{opacity:1;}
+.preview-area .custom-preview{
+  position:absolute; width:88%; opacity:0;
+  transition:opacity .4s ease;
+  display:flex; flex-direction:column; align-items:center; gap:10px;
+}
+.preview-area .custom-preview.visible{opacity:1;}
 
 /* ── BIG NAME ──────────────────────────────────────────────── */
 .big-name{
@@ -246,7 +252,6 @@ main{padding-top:var(--hh);}
   font-size:clamp(17px,1.7vw,21px);
   letter-spacing:-.01em; line-height:1.3;
   position:relative; display:inline-block;
-  /* magnetic underline */
 }
 .project-title::after{
   content:''; position:absolute; bottom:-1px; left:0;
@@ -265,7 +270,7 @@ main{padding-top:var(--hh);}
   color:var(--muted); line-height:1.4;
 }
 
-/* ── MARQUEE (hidden — shows on project hover) ─────────────── */
+/* ── MARQUEE ───────────────────────────────────────────────── */
 .marquee-wrap{
   position:fixed; bottom:0; left:0; right:0;
   height:36px; overflow:hidden;
@@ -289,9 +294,7 @@ main{padding-top:var(--hh);}
 @keyframes marquee{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
 
 /* ── PAGE INTRO ANIMATION ─────────────────────────────────── */
-.intro-line{
-  overflow:hidden; display:block;
-}
+.intro-line{overflow:hidden; display:block;}
 .intro-word{
   display:inline-block;
   animation:wordIn .7s cubic-bezier(.22,1,.36,1) both;
@@ -299,6 +302,28 @@ main{padding-top:var(--hh);}
 @keyframes wordIn{
   from{transform:translateY(110%); opacity:0;}
   to{transform:translateY(0); opacity:1;}
+}
+
+/* ── CUSTOM PREVIEW 3251W ──────────────────────────────────── */
+.preview-3251w-top{
+  width:100%; object-fit:cover; aspect-ratio:16/9;
+}
+.preview-3251w-row{
+  display:flex; gap:10px; width:100%;
+}
+.preview-3251w-row img{
+  position:static !important;
+  width:50%; object-fit:cover; aspect-ratio:3/4;
+  opacity:1 !important; max-width:none !important; max-height:none !important;
+}
+.preview-3251w-text{
+  font-size:11px; font-weight:300; color:#111;
+  text-align:center; line-height:1.7; margin-top:4px;
+}
+.preview-3251w-text a{
+  display:block; margin-top:4px;
+  color:#111; text-decoration:underline;
+  text-underline-offset:3px;
 }
 
 /* ══ MOBILE ═══════════════════════════════════════════════════ */
@@ -395,99 +420,99 @@ main{padding-top:var(--hh);}
 <script>
 /* ── DATA ──────────────────────────────────────────────────── */
 const PROJECTS = [
-  {id:1,title:"Larmes de crocodile",          date:"2025",      sub:"Affiche de théâtre",                                                                                    img:"img/project1.jpg",page:"larmes-de-crocodile.html"},
-  {id:2,title:"Mouvement de la typographie et rotation",date:"2026",sub:"Corpus de recherches",                                                                              img:"img/project2.jpg",page:"mouvement-typographie.html"},
-  {id:3,title:"Carte de visite",               date:"2026",      sub:"",                                                                                                     img:"img/project3.jpg",page:"carte-de-visite.html"},
-  {id:4,title:"Du visible au lisible",         date:"2025/2026", sub:"Réaliser la médiation d'une exposition\u00a0: Affiche\u00a0/ catalogue\u00a0/ objet de médiation",      img:"img/project4.jpg",page:"du-visible-au-lisible.html"},
-  {id:5,title:"Clerestory typographie",        date:"2025",      sub:"Typographie modulaire",                                                                                 img:"img/project5.jpg",page:"clerestory-typographie.html"},
-  {id:6,title:"3251W typographie",             date:"2025",      sub:"Typographie modulaire",                                                                                 img:"img/project6.jpg",page:"3251w-typographie.html"},
+  {id:1, title:"Larmes de crocodile",                    date:"2025",      sub:"Affiche de théâtre",                                                                               img:"img/project1.jpg", page:"larmes-de-crocodile.html"},
+  {id:2, title:"Mouvement de la typographie et rotation",date:"2026",      sub:"Corpus de recherches",                                                                             img:"img/project2.jpg", page:"mouvement-typographie.html"},
+  {id:3, title:"Carte de visite",                        date:"2026",      sub:"",                                                                                                 img:"img/project3.jpg", page:"carte-de-visite.html"},
+  {id:4, title:"Du visible au lisible",                  date:"2025/2026", sub:"Réaliser la médiation d'une exposition\u00a0: Affiche\u00a0/ catalogue\u00a0/ objet de médiation", img:"img/project4.jpg", page:"du-visible-au-lisible.html"},
+  {id:5, title:"Clerestory typographie",                 date:"2025",      sub:"Typographie modulaire",                                                                            img:"img/project5.jpg", page:"clerestory-typographie.html"},
+  {id:6, title:"3251W typographie",                      date:"2025",      sub:"Typographie modulaire",                                                                            img:"img/project6.jpg", page:"3251w-typographie.html"},
 ];
 
 /* ── CUSTOM CURSOR ─────────────────────────────────────────── */
 const cur = document.getElementById('cursor');
 let mx=0, my=0, cx=0, cy=0;
-document.addEventListener('mousemove',e=>{mx=e.clientX; my=e.clientY;});
+document.addEventListener('mousemove', e => { mx=e.clientX; my=e.clientY; });
 (function raf(){
-  cx+=(mx-cx)*.18; cy+=(my-cy)*.18;
-  cur.style.left=cx+'px'; cur.style.top=cy+'px';
+  cx += (mx-cx)*.18; cy += (my-cy)*.18;
+  cur.style.left = cx+'px'; cur.style.top = cy+'px';
   requestAnimationFrame(raf);
 })();
 
-/* big cursor on hoverable items */
-document.querySelectorAll('a,.burger,.nav-panel a,.project-item,.scroll-hint').forEach(el=>{
-  el.addEventListener('mouseenter',()=>cur.classList.add('link-mode'));
-  el.addEventListener('mouseleave',()=>cur.classList.remove('link-mode'));
+document.querySelectorAll('a,.burger,.nav-panel a,.project-item,.scroll-hint').forEach(el => {
+  el.addEventListener('mouseenter', () => cur.classList.add('link-mode'));
+  el.addEventListener('mouseleave', () => cur.classList.remove('link-mode'));
 });
 
-/* scroll hint click */
-document.getElementById('scrollHint').addEventListener('click',e=>{
+document.getElementById('scrollHint').addEventListener('click', e => {
   e.preventDefault();
   document.getElementById('projets').scrollIntoView({behavior:'smooth'});
 });
 
-/* text cursor over bio */
-document.getElementById('bioText').addEventListener('mouseenter',()=>cur.classList.add('text-mode'));
-document.getElementById('bioText').addEventListener('mouseleave',()=>cur.classList.remove('text-mode'));
+document.getElementById('bioText').addEventListener('mouseenter', () => cur.classList.add('text-mode'));
+document.getElementById('bioText').addEventListener('mouseleave', () => cur.classList.remove('text-mode'));
 
 /* ── BURGER / NAV ──────────────────────────────────────────── */
 const burger   = document.getElementById('burger');
 const navPanel = document.getElementById('navPanel');
 const overlay  = document.getElementById('overlay');
 function toggleNav(f){
-  const open=f!==undefined?f:!burger.classList.contains('open');
-  burger.classList.toggle('open',open);
-  navPanel.classList.toggle('open',open);
-  overlay.classList.toggle('active',open);
+  const open = f !== undefined ? f : !burger.classList.contains('open');
+  burger.classList.toggle('open', open);
+  navPanel.classList.toggle('open', open);
+  overlay.classList.toggle('active', open);
 }
-burger.addEventListener('click',()=>toggleNav());
-overlay.addEventListener('click',()=>toggleNav(false));
-document.querySelectorAll('.nav-link').forEach(l=>{
-  l.addEventListener('click',e=>{
-    if(l.dataset.page==='projets'){
+burger.addEventListener('click', () => toggleNav());
+overlay.addEventListener('click', () => toggleNav(false));
+document.querySelectorAll('.nav-link').forEach(l => {
+  l.addEventListener('click', e => {
+    if(l.dataset.page === 'projets'){
       e.preventDefault(); toggleNav(false);
       document.getElementById('projets').scrollIntoView({behavior:'smooth'});
     } else toggleNav(false);
   });
 });
 
-/* ── BIG NAME — letter morph on hover ─────────────────────── */
-const LETTER_VARIANTS=[
-  {w:'300',s:'normal'},
-  {w:'300',s:'italic'},
-  {w:'400',s:'italic'},
-  {w:'500',s:'italic'},
-  {w:'400',s:'normal'},
+/* ── BIG NAME ──────────────────────────────────────────────── */
+const LETTER_VARIANTS = [
+  {w:'300', s:'normal'},
+  {w:'300', s:'italic'},
+  {w:'400', s:'italic'},
+  {w:'500', s:'italic'},
+  {w:'400', s:'normal'},
 ];
 
 function buildName(){
-  const el=document.getElementById('bigName');
-  el.innerHTML='';
-  const words="Harsen Schmidt".split(' ');
-  words.forEach((word,wi)=>{
-    if(wi>0){const sp=document.createElement('span');sp.className='space';sp.style.display='inline-block';sp.style.width='.28em';el.appendChild(sp);}
-    const ww=document.createElement('span'); ww.className='word intro-line';
-    word.split('').forEach((ch,ci)=>{
-      const s=document.createElement('span');
-      s.className='letter intro-word';
-      s.style.animationDelay=(wi*word.length+ci)*.04+'s';
-      s.textContent=ch;
-      /* hover: letter floats + changes weight */
-      s.addEventListener('mouseenter',()=>{
-        s.style.transform='translateY(-8px)';
-        s.style.fontWeight='300';
-        s.style.fontStyle='italic';
-        s.style.letterSpacing='.04em';
+  const el = document.getElementById('bigName');
+  el.innerHTML = '';
+  const words = "Harsen Schmidt".split(' ');
+  words.forEach((word, wi) => {
+    if(wi > 0){
+      const sp = document.createElement('span');
+      sp.style.cssText = 'display:inline-block; width:.28em;';
+      el.appendChild(sp);
+    }
+    const ww = document.createElement('span');
+    ww.className = 'word intro-line';
+    word.split('').forEach((ch, ci) => {
+      const s = document.createElement('span');
+      s.className = 'letter intro-word';
+      s.style.animationDelay = (wi * word.length + ci) * .04 + 's';
+      s.textContent = ch;
+      s.addEventListener('mouseenter', () => {
+        s.style.transform = 'translateY(-8px)';
+        s.style.fontWeight = '300';
+        s.style.fontStyle = 'italic';
+        s.style.letterSpacing = '.04em';
       });
-      s.addEventListener('mouseleave',()=>{
-        s.style.transform='';
-        s.style.fontWeight='';
-        s.style.fontStyle='';
-        s.style.letterSpacing='';
+      s.addEventListener('mouseleave', () => {
+        s.style.transform = '';
+        s.style.fontWeight = '';
+        s.style.fontStyle = '';
+        s.style.letterSpacing = '';
       });
-      /* click: random permanent variant */
-      s.addEventListener('click',()=>{
-        const v=LETTER_VARIANTS[Math.floor(Math.random()*LETTER_VARIANTS.length)];
-        s.style.fontWeight=v.w; s.style.fontStyle=v.s;
+      s.addEventListener('click', () => {
+        const v = LETTER_VARIANTS[Math.floor(Math.random()*LETTER_VARIANTS.length)];
+        s.style.fontWeight = v.w; s.style.fontStyle = v.s;
       });
       ww.appendChild(s);
     });
@@ -496,47 +521,38 @@ function buildName(){
 }
 buildName();
 
-/* ── BIO — letter lift on hover, anti-orphan ───────────────── */
+/* ── BIO ───────────────────────────────────────────────────── */
 function antiOrphan(t){
-  // Glue short words (≤4 chars) to the preceding word with nbsp
-  return t.replace(/ (\S{1,4})(?= )/g,(_,w)=>'\u00a0'+w);
+  return t.replace(/ (\S{1,4})(?= )/g, (_, w) => '\u00a0' + w);
 }
 
 function buildBio(){
-  const el=document.getElementById('bioText');
-  el.innerHTML='';
-  const raw=[
+  const el = document.getElementById('bioText');
+  el.innerHTML = '';
+  const raw = [
     "Je suis étudiant en deuxième année de design graphique à l'Initiative Paris, à travers ce site je souhaite vous présenter les projets que j'ai pu réaliser et qui me tiennent à cœur ainsi que mon univers et ce qui me plaît dans le graphisme.",
     "Je vous souhaite une bonne visite\u00a0:)"
   ];
-
-  raw.forEach((line,li)=>{
-    if(li>0){
-      const nl=document.createElement('span');
-      nl.className='nl'; el.appendChild(nl);
+  raw.forEach((line, li) => {
+    if(li > 0){
+      const nl = document.createElement('span');
+      nl.className = 'nl'; el.appendChild(nl);
     }
-    // Split on real spaces only — nbsp stays glued to its word
-    const words=antiOrphan(line).split(' ');
-    words.forEach((word,wi)=>{
-      // Space between words — a plain text node, allows line-break here
-      if(wi>0) el.appendChild(document.createTextNode(' '));
-
-      // Wrap the word in an inline-block span so letters stay together
-      const wordSpan=document.createElement('span');
-      wordSpan.style.cssText='display:inline-block; white-space:nowrap;';
-
-      // Each character gets its own interactive span
-      [...word].forEach(ch=>{
-        const s=document.createElement('span');
-        s.className='bchar';
-        s.textContent=ch;
-        s.addEventListener('mouseenter',()=>{
+    const words = antiOrphan(line).split(' ');
+    words.forEach((word, wi) => {
+      if(wi > 0) el.appendChild(document.createTextNode(' '));
+      const wordSpan = document.createElement('span');
+      wordSpan.style.cssText = 'display:inline-block; white-space:nowrap;';
+      [...word].forEach(ch => {
+        const s = document.createElement('span');
+        s.className = 'bchar';
+        s.textContent = ch;
+        s.addEventListener('mouseenter', () => {
           s.classList.add('lifted');
-          setTimeout(()=>s.classList.remove('lifted'),350);
+          setTimeout(() => s.classList.remove('lifted'), 350);
         });
         wordSpan.appendChild(s);
       });
-
       el.appendChild(wordSpan);
     });
   });
@@ -545,68 +561,128 @@ buildBio();
 
 /* ── PROJECTS ──────────────────────────────────────────────── */
 function buildProjects(){
-  const list=document.getElementById('projectList');
-  const pa1=document.getElementById('previewArea');
-  const pa2=document.getElementById('projectsRight').querySelector('.preview-area');
-  const imgs1={}, imgs2={};
+  const list = document.getElementById('projectList');
+  const pa1  = document.getElementById('previewArea');
+  const pa2  = document.getElementById('previewArea2');
+  const marquee = document.getElementById('marquee');
+  const mq1  = document.getElementById('mq1');
+  const mq2  = document.getElementById('mq2');
 
-  PROJECTS.forEach(p=>{
-    [pa1,pa2].forEach((pa,idx)=>{
-      const img=document.createElement('img');
-      img.src=p.img; img.alt=p.title;
-      pa.appendChild(img);
-      if(idx===0) imgs1[p.id]=img; else imgs2[p.id]=img;
-    });
+  const imgs1 = {}, imgs2 = {};
+  const mob = () => window.innerWidth <= 768;
+
+  /* ── build preview elements ── */
+  PROJECTS.forEach(p => {
+    if(p.id === 6){
+      /* custom multi-image preview for 3251W */
+      [pa1, pa2].forEach((pa, idx) => {
+        const wrap = document.createElement('div');
+        wrap.className = 'custom-preview';
+
+        /* landscape image on top */
+        const top = document.createElement('img');
+        top.src = 'img/3152W-4.jpg';
+        top.alt = '3251W';
+        top.className = 'preview-3251w-top';
+
+        /* two portrait images side by side */
+        const row = document.createElement('div');
+        row.className = 'preview-3251w-row';
+
+        const mid1 = document.createElement('img');
+        mid1.src = 'img/3152W-5.jpg';
+        mid1.alt = '';
+
+        const mid2 = document.createElement('img');
+        mid2.src = 'img/3152W-6.jpg';
+        mid2.alt = '';
+
+        row.appendChild(mid1);
+        row.appendChild(mid2);
+
+        /* caption + link */
+        const txt = document.createElement('p');
+        txt.className = 'preview-3251w-text';
+        txt.innerHTML = '3152W est une typographie modulaire inspiré de l\'architecture des église romane<br><a href="3251w-typographie.html">Découvrir le projet</a>';
+
+        wrap.appendChild(top);
+        wrap.appendChild(row);
+        wrap.appendChild(txt);
+        pa.appendChild(wrap);
+
+        if(idx === 0) imgs1[p.id] = wrap;
+        else          imgs2[p.id] = wrap;
+      });
+
+    } else {
+      /* standard single image preview */
+      [pa1, pa2].forEach((pa, idx) => {
+        const img = document.createElement('img');
+        img.src = p.img;
+        img.alt = p.title;
+        pa.appendChild(img);
+        if(idx === 0) imgs1[p.id] = img;
+        else          imgs2[p.id] = img;
+      });
+    }
   });
 
-  const marquee=document.getElementById('marquee');
-  const mq1=document.getElementById('mq1');
-  const mq2=document.getElementById('mq2');
-  let curImg1=null, curImg2=null;
-  const mob=()=>window.innerWidth<=768;
+  /* ── build project list items ── */
+  let curEl1 = null, curEl2 = null;
 
-  PROJECTS.forEach(p=>{
-    const item=document.createElement('div');
-    item.className='project-item';
+  PROJECTS.forEach(p => {
+    const item = document.createElement('div');
+    item.className = 'project-item';
 
-    const hdr=document.createElement('div');
-    hdr.className='project-header';
+    const hdr = document.createElement('div');
+    hdr.className = 'project-header';
 
-    const title=document.createElement('span');
-    title.className='project-title'; title.textContent=p.title;
+    const title = document.createElement('span');
+    title.className = 'project-title';
+    title.textContent = p.title;
 
-    const date=document.createElement('span');
-    date.className='project-date'; date.textContent=p.date;
+    const date = document.createElement('span');
+    date.className = 'project-date';
+    date.textContent = p.date;
 
-    hdr.appendChild(title); hdr.appendChild(date); item.appendChild(hdr);
+    hdr.appendChild(title);
+    hdr.appendChild(date);
+    item.appendChild(hdr);
 
     if(p.sub){
-      const sub=document.createElement('p');
-      sub.className='project-sub'; sub.textContent=p.sub; item.appendChild(sub);
+      const sub = document.createElement('p');
+      sub.className = 'project-sub';
+      sub.textContent = p.sub;
+      item.appendChild(sub);
     }
 
-    item.addEventListener('mouseenter',()=>{
+    item.addEventListener('mouseenter', () => {
       if(mob()) return;
-      if(curImg1) curImg1.classList.remove('visible');
-      if(curImg2) curImg2.classList.remove('visible');
-      curImg1=imgs1[p.id]; curImg2=imgs2[p.id];
-      curImg1.classList.add('visible'); curImg2.classList.add('visible');
+      if(curEl1) curEl1.classList.remove('visible');
+      if(curEl2) curEl2.classList.remove('visible');
+      curEl1 = imgs1[p.id];
+      curEl2 = imgs2[p.id];
+      curEl1.classList.add('visible');
+      curEl2.classList.add('visible');
       /* marquee */
-      const txt=(p.title+' — '+p.date+'    ').repeat(6);
-      mq1.textContent=txt; mq2.textContent=txt;
+      const txt = (p.title + ' — ' + p.date + '    ').repeat(6);
+      mq1.textContent = txt;
+      mq2.textContent = txt;
       marquee.classList.add('visible');
-      /* cursor big circle */
+      /* cursor ring */
       cur.classList.add('big');
     });
-    item.addEventListener('mouseleave',()=>{
+
+    item.addEventListener('mouseleave', () => {
       if(mob()) return;
-      if(curImg1) curImg1.classList.remove('visible');
-      if(curImg2) curImg2.classList.remove('visible');
-      curImg1=null; curImg2=null;
+      if(curEl1) curEl1.classList.remove('visible');
+      if(curEl2) curEl2.classList.remove('visible');
+      curEl1 = null; curEl2 = null;
       marquee.classList.remove('visible');
       cur.classList.remove('big');
     });
-    item.addEventListener('click',()=>{ window.location.href=p.page; });
+
+    item.addEventListener('click', () => { window.location.href = p.page; });
 
     list.appendChild(item);
   });
@@ -614,12 +690,12 @@ function buildProjects(){
 buildProjects();
 
 /* ── SCROLL — name parallax ────────────────────────────────── */
-window.addEventListener('scroll',()=>{
-  const y=window.scrollY;
-  const name=document.getElementById('bigName');
-  name.style.transform=`translateY(${y*.12}px)`;
-  name.style.opacity=Math.max(0,1-y/420);
-},{ passive:true });
+window.addEventListener('scroll', () => {
+  const y = window.scrollY;
+  const name = document.getElementById('bigName');
+  name.style.transform = `translateY(${y * .12}px)`;
+  name.style.opacity = Math.max(0, 1 - y / 420);
+}, { passive: true });
 </script>
 </body>
 </html>
