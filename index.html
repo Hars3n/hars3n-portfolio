@@ -105,20 +105,20 @@ main{padding-top:var(--hh);}
   display:flex;flex-direction:column;gap:10px;width:100%;
 }
 #previewInner .custom-wrap .top-img{
-  width:100%;object-fit:cover;aspect-ratio:16/9;display:block;
+  width:100%;object-fit:cover;height:200px;display:block;
 }
 #previewInner .custom-wrap .portrait-row{
   display:flex;gap:10px;width:100%;
 }
 #previewInner .custom-wrap .portrait-row img{
-  width:50%;object-fit:cover;aspect-ratio:3/4;display:block;
+  flex:1;min-width:0;object-fit:cover;height:200px;display:block;
 }
 /* three equal vertical images side by side */
 #previewInner .custom-wrap .triple-row{
   display:flex;gap:10px;width:100%;
 }
 #previewInner .custom-wrap .triple-row img{
-  flex:1;object-fit:cover;aspect-ratio:2/3;display:block;
+  flex:1;min-width:0;object-fit:cover;height:240px;display:block;
 }
 #previewInner .custom-wrap .caption{
   font-size:11px;font-weight:300;color:#111;
