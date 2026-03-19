@@ -100,7 +100,7 @@ main{padding-top:var(--hh);}
   display:block;
 }
 
-/* custom 3251W layout */
+/* custom layout (shared by project 2 & 6) */
 #previewInner .custom-wrap{
   display:flex;flex-direction:column;gap:10px;width:100%;
 }
@@ -368,7 +368,28 @@ var mq2 = document.getElementById('mq2');
 /* Pré-construire un élément de preview par projet */
 var previewEls = {};
 PROJECTS.forEach(function(p){
-  if(p.id === 6){
+  if(p.id === 2){
+    var wrap = document.createElement('div');
+    wrap.className = 'custom-wrap';
+
+    var topImg = document.createElement('img');
+    topImg.src = 'P1-corpus.jpg';
+    topImg.alt = 'Corpus mouvement typographie';
+    topImg.className = 'top-img';
+
+    var row = document.createElement('div');
+    row.className = 'portrait-row';
+    var pm1 = document.createElement('img');pm1.src='P3-corpus.jpg';pm1.alt='';
+    var pm2 = document.createElement('img');pm2.src='P5-corpus.jpg';pm2.alt='';
+    row.appendChild(pm1);row.appendChild(pm2);
+
+    var cap = document.createElement('p');
+    cap.className = 'caption';
+    cap.innerHTML = 'Corpus de recherches visuelles autour du mouvement de la typographie et de la rotation<br><a href="mouvement-typographie.html">D\u00e9couvrir le projet</a>';
+
+    wrap.appendChild(topImg);wrap.appendChild(row);wrap.appendChild(cap);
+    previewEls[p.id] = wrap;
+  } else if(p.id === 6){
     var wrap = document.createElement('div');
     wrap.className = 'custom-wrap';
 
