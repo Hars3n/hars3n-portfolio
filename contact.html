@@ -13,6 +13,7 @@
   --w-m:500;--w-r:400;--w-l:300;
   --ink:#111;--paper:#fff;--muted:#999;
   --hh:60px;--pad:60px;
+  --cell:8px;
 }
 html{scroll-behavior:smooth;}
 body{
@@ -32,21 +33,46 @@ body{
   transition:width .25s ease,height .25s ease,border-radius .25s ease;
   will-change:left,top;
 }
-#cursor.big{width:56px;height:56px;background:transparent;border:1.5px solid var(--ink);}
 #cursor.link-mode{width:44px;height:44px;background:var(--ink);mix-blend-mode:difference;}
+
+/* GAME OF LIFE CANVAS */
+#gol-canvas{
+  position:fixed;top:0;left:0;width:100%;height:100%;
+  pointer-events:none;
+  z-index:0;
+  opacity:1;
+}
+
+/* SPACE HINT */
+#space-hint{
+  position:fixed;bottom:20px;right:var(--pad);
+  font-weight:var(--w-l);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);
+  z-index:100;
+  display:flex;align-items:center;gap:10px;
+  opacity:0;animation:fadeIn .6s 1.2s forwards;
+  pointer-events:none;
+}
+.hint-key{
+  display:inline-block;border:1px solid #ccc;border-radius:3px;
+  padding:2px 8px;font-size:10px;letter-spacing:.1em;color:var(--muted);
+}
+.gol-dot{
+  width:5px;height:5px;border-radius:50%;background:var(--muted);flex-shrink:0;
+  transition:background .3s;
+}
+.gol-dot.running{background:var(--ink);}
 
 /* HEADER */
 header{
   position:fixed;top:0;left:0;right:0;height:var(--hh);z-index:500;
   display:flex;align-items:center;justify-content:space-between;
   padding:0 var(--pad);
-  background:rgba(255,255,255,.96);
+  background:rgba(255,255,255,.97);
   backdrop-filter:blur(10px);
 }
 .logo img{height:26px;width:auto;display:block;}
 .logo-fallback{font-weight:var(--w-m);font-size:12px;letter-spacing:.1em;text-transform:uppercase;}
 
-/* BURGER */
 .burger{
   cursor:none;display:flex;flex-direction:column;gap:5px;padding:6px;z-index:600;
 }
@@ -55,7 +81,6 @@ header{
 .burger.open span:nth-child(2){opacity:0;}
 .burger.open span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg);}
 
-/* NAV PANEL */
 .nav-panel{
   position:fixed;top:calc(var(--hh) + 8px);right:var(--pad);
   background:var(--paper);border:1px solid #e0e0e0;
@@ -75,31 +100,28 @@ header{
 .overlay{position:fixed;inset:0;pointer-events:none;z-index:140;}
 .overlay.active{pointer-events:auto;}
 
-/* PAGE LAYOUT */
+/* PAGE */
 .page{
-  padding-top:var(--hh);
-  min-height:100vh;
-  display:flex;
-}
-
-/* LEFT COLUMN */
-.col-left{
-  width:50%;
-  border-right:1px solid #e0e0e0;
-  padding:80px var(--pad);
+  position:relative;
+  padding-top:calc(var(--hh) + 60px);
+  padding-bottom:80px;
+  z-index:1;
   display:flex;
   flex-direction:column;
-  justify-content:center;
+  align-items:center;
 }
 
-/* BIG TITLE */
+/* TITLE */
 .big-name{
   font-weight:var(--w-m);
-  font-size:clamp(56px,6.5vw,100px);
+  font-size:clamp(64px,8vw,120px);
   letter-spacing:-.04em;
   line-height:.9;
-  margin-bottom:44px;
+  margin-bottom:48px;
   user-select:none;
+  /* white block behind title */
+  background:rgba(255,255,255,.97);
+  padding:12px 24px;
 }
 .big-name .letter{
   display:inline-block;
@@ -111,7 +133,9 @@ header{
 .stage-badge{
   display:inline-flex;align-items:center;gap:10px;
   font-weight:var(--w-l);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);
-  margin-bottom:36px;
+  margin-bottom:52px;
+  background:rgba(255,255,255,.97);
+  padding:8px 16px;
   opacity:0;animation:fadeIn .6s .4s forwards;
 }
 .stage-dot{
@@ -121,25 +145,22 @@ header{
 @keyframes blink{0%,100%{opacity:1;}50%{opacity:.15;}}
 @keyframes fadeIn{to{opacity:1;}}
 
-/* CONTACTER BUTTON */
-.contacter-btn{
-  display:inline-flex;align-items:center;gap:12px;
-  font-weight:var(--w-l);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);
-  text-decoration:none;background:none;border:none;padding:0;cursor:none;
-  margin-bottom:48px;
-  opacity:0;animation:fadeIn .6s .7s forwards;
-}
-.contacter-btn .c-line{
-  width:40px;height:1px;background:var(--muted);flex-shrink:0;
-  animation:lineAnim 2.5s 1s ease-in-out infinite;
-  transform-origin:left;
-}
-@keyframes lineAnim{0%{transform:scaleX(0);opacity:0;}30%,70%{transform:scaleX(1);opacity:1;}100%{transform:scaleX(0) translateX(40px);opacity:0;}}
-
 /* CV CARD */
+.cv-wrap{
+  width:100%;
+  max-width:600px;
+  display:flex;flex-direction:column;align-items:center;
+  gap:20px;
+  margin-bottom:72px;
+  /* white block behind CV */
+  background:rgba(255,255,255,.97);
+  padding:24px;
+}
+
 .cv-card{
   position:relative;
-  width:100%;max-width:360px;height:500px;
+  width:100%;
+  height:780px;
   border:1px solid #e0e0e0;overflow:hidden;
   transition:border-color .3s ease;
 }
@@ -157,12 +178,10 @@ header{
 .cv-card:hover .cv-hover-label{opacity:1;}
 .cv-hover-label span{font-weight:var(--w-l);font-size:11px;letter-spacing:.18em;text-transform:uppercase;}
 
-/* DOWNLOAD BUTTON */
 .download-btn{
   display:inline-flex;align-items:center;gap:12px;
   font-weight:var(--w-r);font-size:12px;letter-spacing:.14em;text-transform:uppercase;
   color:var(--ink);text-decoration:none;cursor:none;
-  margin-top:20px;
 }
 .download-btn .dl-line{
   width:36px;height:1px;background:var(--ink);flex-shrink:0;
@@ -170,22 +189,19 @@ header{
 }
 .download-btn:hover .dl-line{width:60px;}
 
-/* RIGHT COLUMN */
-.col-right{
-  width:50%;
-  padding:80px var(--pad);
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  opacity:0;animation:fadeIn .7s .3s forwards;
+/* CONTACT INFO */
+.contact-block{
+  width:100%;max-width:600px;
+  background:rgba(255,255,255,.97);
+  padding:40px 40px 48px;
+  opacity:0;animation:fadeIn .7s .5s forwards;
 }
 
 .col-label{
   font-weight:var(--w-l);font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);
-  margin-bottom:28px;
+  margin-bottom:24px;
 }
 
-/* INFO LIST */
 .info-list{display:flex;flex-direction:column;gap:10px;}
 .info-row{
   display:flex;align-items:baseline;justify-content:space-between;gap:24px;
@@ -212,52 +228,41 @@ header{
 
 /* FOOTER */
 footer{
+  position:relative;z-index:10;
+  background:rgba(255,255,255,.97);
   padding:28px var(--pad);
   border-top:1px solid #e8e8e8;
   display:flex;align-items:center;justify-content:space-between;
 }
 footer p{font-weight:var(--w-l);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);}
 
-/* MARQUEE */
-.marquee-wrap{
-  position:fixed;bottom:0;left:0;right:0;height:36px;
-  overflow:hidden;pointer-events:none;z-index:50;
-  opacity:0;transition:opacity .3s ease;
-}
-.marquee-wrap.visible{opacity:1;}
-.marquee-inner{display:flex;white-space:nowrap;animation:marquee 10s linear infinite;}
-.marquee-inner span{
-  font-weight:var(--w-l);font-size:11px;letter-spacing:.15em;text-transform:uppercase;
-  color:var(--ink);opacity:.5;padding:9px 24px 0;
-  border-top:1px solid #e0e0e0;background:var(--paper);flex-shrink:0;
-}
 @keyframes marquee{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
 
 /* RESPONSIVE */
-@media(max-width:900px){
-  :root{--pad:28px;}
-  .page{flex-direction:column;}
-  .col-left{width:100%;border-right:none;border-bottom:1px solid #e0e0e0;padding-bottom:60px;}
-  .col-right{width:100%;}
+@media(max-width:700px){
+  :root{--pad:24px;}
+  .cv-card{height:480px;}
+  .cv-wrap,.contact-block{padding:16px;}
+  .big-name{padding:8px 12px;}
 }
-@media(max-width:600px){
-  :root{--hh:56px;--pad:20px;}
+@media(max-width:480px){
+  :root{--hh:56px;--pad:16px;}
   body{cursor:auto;}
   #cursor{display:none;}
-  .big-name{font-size:clamp(40px,12vw,60px);}
-  .info-val{font-size:13px;}
+  .big-name{font-size:clamp(40px,13vw,64px);}
 }
 </style>
 </head>
 <body>
 
+<canvas id="gol-canvas"></canvas>
 <div id="cursor"></div>
 <div class="overlay" id="overlay"></div>
 
-<div class="marquee-wrap" id="marquee">
-  <div class="marquee-inner">
-    <span id="mq1"></span><span id="mq2"></span>
-  </div>
+<div id="space-hint">
+  <span class="gol-dot" id="golDot"></span>
+  <span class="hint-key">Espace</span>
+  <span>Jeu de la vie</span>
 </div>
 
 <header>
@@ -279,64 +284,46 @@ footer p{font-weight:var(--w-l);font-size:11px;letter-spacing:.12em;text-transfo
 
 <div class="page">
 
-  <!-- COLONNE GAUCHE : titre + CV -->
-  <div class="col-left">
+  <h1 class="big-name" id="bigName" aria-label="Contact"></h1>
 
-    <h1 class="big-name" id="bigName" aria-label="Contact"></h1>
+  <div class="stage-badge">
+    <span class="stage-dot"></span>
+    Stage · 3 mois · Avril – Juillet 2026
+  </div>
 
-    <div class="stage-badge">
-      <span class="stage-dot"></span>
-      Stage · 3 mois · Avril – Juillet 2026
-    </div>
-
-    <a href="#coordonnees" class="contacter-btn" id="contacterBtn">
-      <span class="c-line"></span>
-      <span>Contacter</span>
-    </a>
-
+  <div class="cv-wrap">
     <div class="cv-card" id="cvCard">
       <iframe src="Cv-harsen1.pdf#toolbar=0&navpanes=0&scrollbar=0" title="CV Harsen Schmidt"></iframe>
       <div class="cv-hover-label">
         <span>Harsen Schmidt — Designer Graphique</span>
       </div>
     </div>
-
     <a href="Cv-harsen1.pdf" download="Cv-harsen1.pdf" class="download-btn">
       <span class="dl-line"></span>
       <span>Télécharger le CV</span>
     </a>
-
   </div>
 
-  <!-- COLONNE DROITE : coordonnées -->
-  <div class="col-right" id="coordonnees">
-
+  <div class="contact-block">
     <p class="col-label">Coordonnées</p>
-
     <div class="info-list">
-
-      <div class="info-row" style="animation-delay:.35s">
+      <div class="info-row" style="animation-delay:.4s">
         <span class="info-key">Téléphone</span>
         <span class="info-val"><a href="tel:0664812902">06 64 81 29 02</a></span>
       </div>
-
-      <div class="info-row" style="animation-delay:.45s">
+      <div class="info-row" style="animation-delay:.5s">
         <span class="info-key">Email</span>
         <span class="info-val"><a href="mailto:harsen.schmidtk95@gmail.com">harsen.schmidtk95@gmail.com</a></span>
       </div>
-
-      <div class="info-row" style="animation-delay:.55s">
+      <div class="info-row" style="animation-delay:.6s">
         <span class="info-key">Instagram</span>
         <span class="info-val"><a href="https://instagram.com/Hars.3n" target="_blank" rel="noopener">@Hars.3n</a></span>
       </div>
-
-      <div class="info-row" style="animation-delay:.65s">
+      <div class="info-row" style="animation-delay:.7s">
         <span class="info-key">Formation</span>
         <span class="info-val">2e année DNMADe — L'Initiative Paris</span>
       </div>
-
     </div>
-
   </div>
 
 </div>
@@ -349,18 +336,17 @@ footer p{font-weight:var(--w-l);font-size:11px;letter-spacing:.12em;text-transfo
 <script>
 document.getElementById('year').textContent = new Date().getFullYear();
 
-/* CURSOR */
+/* ── CURSOR ── */
 var cur = document.getElementById('cursor');
 var mx=0,my=0,cx=0,cy=0;
 document.addEventListener('mousemove',function(e){mx=e.clientX;my=e.clientY;});
 (function raf(){cx+=(mx-cx)*.18;cy+=(my-cy)*.18;cur.style.left=cx+'px';cur.style.top=cy+'px';requestAnimationFrame(raf);})();
-
 document.querySelectorAll('a,.burger').forEach(function(el){
   el.addEventListener('mouseenter',function(){cur.classList.add('link-mode');});
   el.addEventListener('mouseleave',function(){cur.classList.remove('link-mode');});
 });
 
-/* BURGER */
+/* ── BURGER ── */
 var burger=document.getElementById('burger');
 var navPanel=document.getElementById('navPanel');
 var overlay=document.getElementById('overlay');
@@ -374,7 +360,7 @@ burger.addEventListener('click',function(){toggleNav();});
 overlay.addEventListener('click',function(){toggleNav(false);});
 navPanel.querySelectorAll('a').forEach(function(l){l.addEventListener('click',function(){toggleNav(false);});});
 
-/* BIG NAME */
+/* ── BIG NAME ── */
 (function(){
   var el=document.getElementById('bigName');
   'Contact'.split('').forEach(function(ch){
@@ -384,29 +370,196 @@ navPanel.querySelectorAll('a').forEach(function(l){l.addEventListener('click',fu
   });
 })();
 
-/* CONTACTER scroll */
-document.getElementById('contacterBtn').addEventListener('click',function(e){
-  e.preventDefault();
-  document.getElementById('coordonnees').scrollIntoView({behavior:'smooth'});
+/* ══════════════════════════════════════════
+   GAME OF LIFE
+   ══════════════════════════════════════════ */
+var canvas = document.getElementById('gol-canvas');
+var ctx = canvas.getContext('2d');
+var CELL = 8;
+var cols, rows;
+var grid, next;
+var running = false;
+var animId = null;
+var lastTick = 0;
+var TICK_MS = 120;
+var golDot = document.getElementById('golDot');
+
+/* White-out zones — updated on resize/scroll */
+var whiteZones = [];
+
+function getWhiteZones() {
+  whiteZones = [];
+  /* header */
+  whiteZones.push({x:0, y:0, w:window.innerWidth, h:60});
+  /* all content blocks with background */
+  var els = document.querySelectorAll('.big-name, .stage-badge, .cv-wrap, .contact-block, footer, .nav-panel');
+  els.forEach(function(el){
+    var r = el.getBoundingClientRect();
+    var scrollY = window.scrollY;
+    whiteZones.push({
+      x: r.left - 8,
+      y: r.top + scrollY - 8,
+      w: r.width + 16,
+      h: r.height + 16
+    });
+  });
+}
+
+function inWhiteZone(col, row) {
+  var px = col * CELL;
+  var py = row * CELL + window.scrollY;
+  for (var i=0; i<whiteZones.length; i++) {
+    var z = whiteZones[i];
+    if (px >= z.x && px < z.x+z.w && py >= z.y && py < z.y+z.h) return true;
+  }
+  return false;
+}
+
+function resize() {
+  canvas.width  = window.innerWidth;
+  canvas.height = document.body.scrollHeight;
+  cols = Math.floor(canvas.width / CELL);
+  rows = Math.floor(canvas.height / CELL);
+  /* preserve existing grid if possible */
+  var oldGrid = grid;
+  var oldCols = oldGrid ? oldGrid[0] && oldGrid[0].length : 0;
+  var oldRows = oldGrid ? oldGrid.length : 0;
+  grid = [];
+  next = [];
+  for (var r=0; r<rows; r++) {
+    grid[r] = new Uint8Array(cols);
+    next[r] = new Uint8Array(cols);
+    if (oldGrid && r < oldRows) {
+      for (var c=0; c<cols; c++) {
+        if (c < oldCols) grid[r][c] = oldGrid[r][c];
+      }
+    }
+  }
+  getWhiteZones();
+  render();
+}
+
+function neighbors(r, c) {
+  var n=0;
+  for (var dr=-1; dr<=1; dr++) {
+    for (var dc=-1; dc<=1; dc++) {
+      if (dr===0 && dc===0) continue;
+      var nr=(r+dr+rows)%rows;
+      var nc=(c+dc+cols)%cols;
+      n += grid[nr][nc];
+    }
+  }
+  return n;
+}
+
+function step() {
+  getWhiteZones();
+  for (var r=0; r<rows; r++) {
+    for (var c=0; c<cols; c++) {
+      var n = neighbors(r,c);
+      var alive = grid[r][c];
+      if (inWhiteZone(c,r)) {
+        next[r][c] = 0;
+      } else if (alive) {
+        next[r][c] = (n===2||n===3) ? 1 : 0;
+      } else {
+        next[r][c] = (n===3) ? 1 : 0;
+      }
+    }
+  }
+  /* swap */
+  var tmp = grid; grid = next; next = tmp;
+}
+
+function render() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = '#111';
+  for (var r=0; r<rows; r++) {
+    for (var c=0; c<cols; c++) {
+      if (grid[r][c] && !inWhiteZone(c,r)) {
+        ctx.fillRect(c*CELL+1, r*CELL+1, CELL-2, CELL-2);
+      }
+    }
+  }
+}
+
+function loop(ts) {
+  if (!running) return;
+  if (ts - lastTick > TICK_MS) {
+    lastTick = ts;
+    step();
+    render();
+  }
+  animId = requestAnimationFrame(loop);
+}
+
+function startGOL() {
+  if (running) return;
+  running = true;
+  golDot.classList.add('running');
+  animId = requestAnimationFrame(loop);
+}
+
+function stopGOL() {
+  running = false;
+  golDot.classList.remove('running');
+  if (animId) { cancelAnimationFrame(animId); animId=null; }
+  render();
+}
+
+/* SPACE key toggle */
+document.addEventListener('keydown', function(e) {
+  if (e.code === 'Space' || e.key === ' ') {
+    e.preventDefault();
+    if (running) stopGOL(); else startGOL();
+  }
 });
 
-/* MARQUEE on CV hover */
-var marqueeEl=document.getElementById('marquee');
-var mq1=document.getElementById('mq1');
-var mq2=document.getElementById('mq2');
-var cvCard=document.getElementById('cvCard');
+/* CLICK to paint cells */
+canvas.style.pointerEvents = 'auto';
+var painting = false;
 
-cvCard.addEventListener('mouseenter',function(){
-  var t='Harsen Schmidt — Designer Graphique — Stage Avril–Juillet 2026    ';
-  t=t.repeat(4);
-  mq1.textContent=t; mq2.textContent=t;
-  marqueeEl.classList.add('visible');
-  cur.classList.add('big');
+function canvasPos(e) {
+  var x = (e.touches ? e.touches[0].clientX : e.clientX);
+  var y = (e.touches ? e.touches[0].clientY : e.clientY) + window.scrollY;
+  return { c: Math.floor(x/CELL), r: Math.floor(y/CELL) };
+}
+
+function paintCell(e) {
+  var p = canvasPos(e);
+  if (p.r>=0 && p.r<rows && p.c>=0 && p.c<cols && !inWhiteZone(p.c,p.r)) {
+    grid[p.r][p.c] = 1;
+    render();
+  }
+}
+
+canvas.addEventListener('mousedown', function(e){
+  /* don't block clicks on page elements */
+  if (e.target !== canvas) return;
+  painting=true;
+  paintCell(e);
 });
-cvCard.addEventListener('mouseleave',function(){
-  marqueeEl.classList.remove('visible');
-  cur.classList.remove('big');
+canvas.addEventListener('mousemove', function(e){
+  if (!painting) return;
+  paintCell(e);
 });
+window.addEventListener('mouseup', function(){painting=false;});
+
+/* Forward mouse events to underlying elements when not painting */
+canvas.addEventListener('click', function(e){
+  var el = document.elementFromPoint(e.clientX, e.clientY);
+  if (el && el !== canvas) el.click();
+});
+
+/* Pass through hover for cursor */
+canvas.addEventListener('mousemove', function(e){
+  mx = e.clientX; my = e.clientY;
+});
+
+window.addEventListener('resize', resize);
+window.addEventListener('scroll', function(){ getWhiteZones(); render(); }, {passive:true});
+
+resize();
 </script>
 </body>
 </html>
