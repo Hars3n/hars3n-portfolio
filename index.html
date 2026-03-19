@@ -400,18 +400,21 @@ PROJECTS.forEach(function(p){
     var wrap = document.createElement('div');
     wrap.className = 'custom-wrap';
 
-    var row = document.createElement('div');
-    row.className = 'triple-row';
+    var topRow = document.createElement('div');
+    topRow.className = 'portrait-row';
     var ti1 = document.createElement('img');ti1.src='carte-v6.jpg';ti1.alt='Carte de visite';
     var ti2 = document.createElement('img');ti2.src='carte-v5.jpg';ti2.alt='Carte de visite';
-    var ti3 = document.createElement('img');ti3.src='carte-v2.jpg';ti3.alt='Carte de visite';
-    row.appendChild(ti1);row.appendChild(ti2);row.appendChild(ti3);
+    topRow.appendChild(ti1);topRow.appendChild(ti2);
+
+    var botImg = document.createElement('img');
+    botImg.src='carte-v2.jpg';botImg.alt='Carte de visite';
+    botImg.className='top-img';
 
     var cap = document.createElement('p');
     cap.className = 'caption';
     cap.innerHTML = 'Carte de visite<br><a href="carte-de-visite.html">D\u00e9couvrir le projet</a>';
 
-    wrap.appendChild(row);wrap.appendChild(cap);
+    wrap.appendChild(topRow);wrap.appendChild(botImg);wrap.appendChild(cap);
     previewEls[p.id] = wrap;
   } else if(p.id === 5){
     var wrap = document.createElement('div');
