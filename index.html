@@ -100,7 +100,7 @@ main{padding-top:var(--hh);}
   display:block;
 }
 
-/* custom layout (shared by project 2 & 6) */
+/* custom layout (shared by projects 2, 3, 5, 6) */
 #previewInner .custom-wrap{
   display:flex;flex-direction:column;gap:10px;width:100%;
 }
@@ -112,6 +112,13 @@ main{padding-top:var(--hh);}
 }
 #previewInner .custom-wrap .portrait-row img{
   width:50%;object-fit:cover;aspect-ratio:3/4;display:block;
+}
+/* three equal vertical images side by side */
+#previewInner .custom-wrap .triple-row{
+  display:flex;gap:10px;width:100%;
+}
+#previewInner .custom-wrap .triple-row img{
+  flex:1;object-fit:cover;aspect-ratio:2/3;display:block;
 }
 #previewInner .custom-wrap .caption{
   font-size:11px;font-weight:300;color:#111;
@@ -259,7 +266,7 @@ main{padding-top:var(--hh);}
       <div class="info-block">
         2e année de DNMADe Graphisme – Spécialité parcours d'interaction<br>
         L'Initiative Paris, 2024–2026<br>
-        <a href="mailto:Harsen.schmidtk95@gmail.com">Harsen.schmidtk95@gmail.com</a> – <a href="https://instagram.com/hars.3n" target="_blank">@hars.3n</a>
+        <a href="/cdn-cgi/l/email-protection#246c455657414a0a57474c494d40504f1d11644349454d480a474b49"><span class="__cf_email__" data-cfemail="1951786b6a7c77376a7a7174707d6d72202c597e74787075377a7674">[email&#160;protected]</span></a> – <a href="https://instagram.com/hars.3n" target="_blank">@hars.3n</a>
       </div>
     </div>
   </section>
@@ -272,13 +279,13 @@ main{padding-top:var(--hh);}
   </section>
 </main>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 var PROJECTS = [
   {id:1, title:"Larmes de crocodile",                     date:"2025",      sub:"Affiche de th\u00e9\u00e2tre",                                                                                                    img:"img/project1.jpg", page:"larmes-de-crocodile.html"},
   {id:2, title:"Mouvement de la typographie et rotation", date:"2026",      sub:"Corpus de recherches",                                                                                                            img:"img/project2.jpg", page:"mouvement-typographie.html"},
-  {id:3, title:"Carte de visite",                         date:"2026",      sub:"",                                                                                                                                img:"img/project3.jpg", page:"carte-de-visite.html"},
+  {id:3, title:"Carte de visite",                         date:"2026",      sub:"Pap\u00e9terie",                                                                                                              img:"img/project3.jpg", page:"carte-de-visite.html"},
   {id:4, title:"Du visible au lisible",                   date:"2025/2026", sub:"R\u00e9aliser la m\u00e9diation d'une exposition\u00a0: Affiche\u00a0/ catalogue\u00a0/ objet de m\u00e9diation",               img:"img/project4.jpg", page:"du-visible-au-lisible.html"},
-  {id:5, title:"Clerestory typographie",                  date:"2025",      sub:"Typographie modulaire",                                                                                                           img:"img/project5.jpg", page:"clerestory-typographie.html"},
+  {id:5, title:"Cycadia typographie",                     date:"2025",      sub:"Typographie modulaire",                                                                                                           img:"img/project5.jpg", page:"clerestory-typographie.html"},
   {id:6, title:"3251W typographie",                       date:"2025",      sub:"Typographie modulaire",                                                                                                           img:"img/project6.jpg", page:"3251w-typographie.html"}
 ];
 
@@ -386,6 +393,44 @@ PROJECTS.forEach(function(p){
     var cap = document.createElement('p');
     cap.className = 'caption';
     cap.innerHTML = 'Corpus de recherches visuelles autour du mouvement de la typographie et de la rotation<br><a href="mouvement-typographie.html">D\u00e9couvrir le projet</a>';
+
+    wrap.appendChild(topImg);wrap.appendChild(row);wrap.appendChild(cap);
+    previewEls[p.id] = wrap;
+  } else if(p.id === 3){
+    var wrap = document.createElement('div');
+    wrap.className = 'custom-wrap';
+
+    var row = document.createElement('div');
+    row.className = 'triple-row';
+    var ti1 = document.createElement('img');ti1.src='carte-v6.jpg';ti1.alt='Carte de visite';
+    var ti2 = document.createElement('img');ti2.src='carte-v5.jpg';ti2.alt='Carte de visite';
+    var ti3 = document.createElement('img');ti3.src='carte-v2.jpg';ti3.alt='Carte de visite';
+    row.appendChild(ti1);row.appendChild(ti2);row.appendChild(ti3);
+
+    var cap = document.createElement('p');
+    cap.className = 'caption';
+    cap.innerHTML = 'Carte de visite<br><a href="carte-de-visite.html">D\u00e9couvrir le projet</a>';
+
+    wrap.appendChild(row);wrap.appendChild(cap);
+    previewEls[p.id] = wrap;
+  } else if(p.id === 5){
+    var wrap = document.createElement('div');
+    wrap.className = 'custom-wrap';
+
+    var topImg = document.createElement('img');
+    topImg.src = 'cycadia-5.jpg';
+    topImg.alt = 'Cycadia typographie';
+    topImg.className = 'top-img';
+
+    var row = document.createElement('div');
+    row.className = 'portrait-row';
+    var pm1 = document.createElement('img');pm1.src='cycadia-3.jpg';pm1.alt='';
+    var pm2 = document.createElement('img');pm2.src='cycadia-2.jpg';pm2.alt='';
+    row.appendChild(pm1);row.appendChild(pm2);
+
+    var cap = document.createElement('p');
+    cap.className = 'caption';
+    cap.innerHTML = 'Cycadia est une typographie modulaire<br><a href="clerestory-typographie.html">D\u00e9couvrir le projet</a>';
 
     wrap.appendChild(topImg);wrap.appendChild(row);wrap.appendChild(cap);
     previewEls[p.id] = wrap;
