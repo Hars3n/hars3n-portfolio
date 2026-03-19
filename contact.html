@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Contact — Harsen Schmidt</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap');
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --font:"Avenir Next","Avenir","Nunito",sans-serif;
+  --w-m:500;--w-r:400;--w-l:300;
+  --ink:#111;--paper:#fff;--muted:#999;
+  --hh:60px;--pad:60px;
+}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--paper);color:var(--ink);
+  font-family:var(--font);font-weight:var(--w-r);
+  overflow-x:hidden;cursor:none;
+  -webkit-font-smoothing:antialiased;
+  min-height:100vh;
+}
+
+/* CURSOR */
+#cursor{
+  position:fixed;width:10px;height:10px;
+  background:var(--ink);border-radius:50%;
+  pointer-events:none;z-index:9999;
+  transform:translate(-50%,-50%);
+  transition:width .25s ease,height .25s ease,border-radius .25s ease;
+  will-change:left,top;
+}
+#cursor.big{width:56px;height:56px;background:transparent;border:1.5px solid var(--ink);}
+#cursor.link-mode{width:44px;height:44px;background:var(--ink);mix-blend-mode:difference;}
+
+/* HEADER */
+header{
+  position:fixed;top:0;left:0;right:0;height:var(--hh);z-index:500;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 var(--pad);
+  background:rgba(255,255,255,.96);
+  backdrop-filter:blur(10px);
+}
+.logo img{height:26px;width:auto;display:block;}
+.logo-fallback{font-weight:var(--w-m);font-size:12px;letter-spacing:.1em;text-transform:uppercase;}
+
+/* BURGER */
+.burger{
+  cursor:none;display:flex;flex-direction:column;gap:5px;padding:6px;z-index:600;
+}
+.burger span{display:block;width:22px;height:1.5px;background:var(--ink);transition:transform .3s,opacity .3s;}
+.burger.open span:nth-child(1){transform:translateY(6.5px) rotate(45deg);}
+.burger.open span:nth-child(2){opacity:0;}
+.burger.open span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg);}
+
+/* NAV PANEL */
+.nav-panel{
+  position:fixed;top:calc(var(--hh) + 8px);right:var(--pad);
+  background:var(--paper);border:1px solid #e0e0e0;
+  padding:18px 28px;display:flex;flex-direction:column;
+  z-index:550;opacity:0;transform:translateY(-6px);pointer-events:none;
+  transition:opacity .2s ease,transform .2s ease;
+}
+.nav-panel.open{opacity:1;transform:translateY(0);pointer-events:auto;}
+.nav-panel a{
+  display:block;font-weight:var(--w-r);font-size:13px;color:var(--ink);
+  text-decoration:none;line-height:1;margin-bottom:14px;white-space:nowrap;position:relative;
+}
+.nav-panel a:last-child{margin-bottom:0;}
+.nav-panel a::after{content:'';position:absolute;bottom:-2px;left:0;width:0;height:1px;background:var(--ink);transition:width .22s ease;}
+.nav-panel a:hover::after{width:100%;}
+
+.overlay{position:fixed;inset:0;pointer-events:none;z-index:140;}
+.overlay.active{pointer-events:auto;}
+
+/* PAGE LAYOUT */
+.page{
+  padding-top:var(--hh);
+  min-height:100vh;
+  display:flex;
+}
+
+/* LEFT COLUMN */
+.col-left{
+  width:50%;
+  border-right:1px solid #e0e0e0;
+  padding:80px var(--pad);
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+}
+
+/* BIG TITLE */
+.big-name{
+  font-weight:var(--w-m);
+  font-size:clamp(56px,6.5vw,100px);
+  letter-spacing:-.04em;
+  line-height:.9;
+  margin-bottom:44px;
+  user-select:none;
+}
+.big-name .letter{
+  display:inline-block;
+  transition:transform .35s cubic-bezier(.22,1,.36,1),font-style .35s ease;
+}
+.big-name .letter:hover{transform:translateY(-8px);font-style:italic;}
+
+/* STAGE BADGE */
+.stage-badge{
+  display:inline-flex;align-items:center;gap:10px;
+  font-weight:var(--w-l);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);
+  margin-bottom:36px;
+  opacity:0;animation:fadeIn .6s .4s forwards;
+}
+.stage-dot{
+  width:6px;height:6px;background:var(--ink);border-radius:50%;flex-shrink:0;
+  animation:blink 2.2s ease-in-out infinite;
+}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:.15;}}
+@keyframes fadeIn{to{opacity:1;}}
+
+/* CONTACTER BUTTON */
+.contacter-btn{
+  display:inline-flex;align-items:center;gap:12px;
+  font-weight:var(--w-l);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);
+  text-decoration:none;background:none;border:none;padding:0;cursor:none;
+  margin-bottom:48px;
+  opacity:0;animation:fadeIn .6s .7s forwards;
+}
+.contacter-btn .c-line{
+  width:40px;height:1px;background:var(--muted);flex-shrink:0;
+  animation:lineAnim 2.5s 1s ease-in-out infinite;
+  transform-origin:left;
+}
+@keyframes lineAnim{0%{transform:scaleX(0);opacity:0;}30%,70%{transform:scaleX(1);opacity:1;}100%{transform:scaleX(0) translateX(40px);opacity:0;}}
+
+/* CV CARD */
+.cv-card{
+  position:relative;
+  width:100%;max-width:360px;height:500px;
+  border:1px solid #e0e0e0;overflow:hidden;
+  transition:border-color .3s ease;
+}
+.cv-card:hover{border-color:var(--ink);}
+.cv-card iframe{
+  width:140%;height:140%;border:none;
+  transform:scale(.714);transform-origin:top left;
+  pointer-events:none;
+}
+.cv-hover-label{
+  position:absolute;inset:0;display:flex;align-items:flex-end;padding:20px;
+  background:linear-gradient(to top,rgba(255,255,255,.92) 0%,transparent 55%);
+  opacity:0;transition:opacity .3s ease;
+}
+.cv-card:hover .cv-hover-label{opacity:1;}
+.cv-hover-label span{font-weight:var(--w-l);font-size:11px;letter-spacing:.18em;text-transform:uppercase;}
+
+/* DOWNLOAD BUTTON */
+.download-btn{
+  display:inline-flex;align-items:center;gap:12px;
+  font-weight:var(--w-r);font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--ink);text-decoration:none;cursor:none;
+  margin-top:20px;
+}
+.download-btn .dl-line{
+  width:36px;height:1px;background:var(--ink);flex-shrink:0;
+  transition:width .3s cubic-bezier(.77,0,.175,1);
+}
+.download-btn:hover .dl-line{width:60px;}
+
+/* RIGHT COLUMN */
+.col-right{
+  width:50%;
+  padding:80px var(--pad);
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  opacity:0;animation:fadeIn .7s .3s forwards;
+}
+
+.col-label{
+  font-weight:var(--w-l);font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);
+  margin-bottom:28px;
+}
+
+/* INFO LIST */
+.info-list{display:flex;flex-direction:column;gap:10px;}
+.info-row{
+  display:flex;align-items:baseline;justify-content:space-between;gap:24px;
+  opacity:0;animation:slideUp .45s ease both;
+}
+@keyframes slideUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+
+.info-key{
+  font-weight:var(--w-l);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);
+  flex-shrink:0;
+}
+.info-val{
+  font-weight:var(--w-r);font-size:clamp(13px,1.3vw,16px);letter-spacing:-.01em;text-align:right;
+}
+.info-val a{
+  color:var(--ink);text-decoration:none;position:relative;display:inline-block;
+}
+.info-val a::after{
+  content:'';position:absolute;bottom:-1px;left:0;
+  width:0;height:1px;background:var(--ink);
+  transition:width .35s cubic-bezier(.77,0,.175,1);
+}
+.info-val a:hover::after{width:100%;}
+
+/* FOOTER */
+footer{
+  padding:28px var(--pad);
+  border-top:1px solid #e8e8e8;
+  display:flex;align-items:center;justify-content:space-between;
+}
+footer p{font-weight:var(--w-l);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);}
+
+/* MARQUEE */
+.marquee-wrap{
+  position:fixed;bottom:0;left:0;right:0;height:36px;
+  overflow:hidden;pointer-events:none;z-index:50;
+  opacity:0;transition:opacity .3s ease;
+}
+.marquee-wrap.visible{opacity:1;}
+.marquee-inner{display:flex;white-space:nowrap;animation:marquee 10s linear infinite;}
+.marquee-inner span{
+  font-weight:var(--w-l);font-size:11px;letter-spacing:.15em;text-transform:uppercase;
+  color:var(--ink);opacity:.5;padding:9px 24px 0;
+  border-top:1px solid #e0e0e0;background:var(--paper);flex-shrink:0;
+}
+@keyframes marquee{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  :root{--pad:28px;}
+  .page{flex-direction:column;}
+  .col-left{width:100%;border-right:none;border-bottom:1px solid #e0e0e0;padding-bottom:60px;}
+  .col-right{width:100%;}
+}
+@media(max-width:600px){
+  :root{--hh:56px;--pad:20px;}
+  body{cursor:auto;}
+  #cursor{display:none;}
+  .big-name{font-size:clamp(40px,12vw,60px);}
+  .info-val{font-size:13px;}
+}
+</style>
+</head>
+<body>
+
+<div id="cursor"></div>
+<div class="overlay" id="overlay"></div>
+
+<div class="marquee-wrap" id="marquee">
+  <div class="marquee-inner">
+    <span id="mq1"></span><span id="mq2"></span>
+  </div>
+</div>
+
+<header>
+  <div class="logo">
+    <img src="logo.png" alt="Harsen Schmidt" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+    <span class="logo-fallback" style="display:none">HS</span>
+  </div>
+  <div class="burger" id="burger" role="button" tabindex="0" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </div>
+</header>
+
+<nav class="nav-panel" id="navPanel">
+  <a href="index.html">Accueil</a>
+  <a href="index.html#projets">Projets</a>
+  <a href="contact.html">Contact</a>
+  <a href="galerie.html">Galerie</a>
+</nav>
+
+<div class="page">
+
+  <!-- COLONNE GAUCHE : titre + CV -->
+  <div class="col-left">
+
+    <h1 class="big-name" id="bigName" aria-label="Contact"></h1>
+
+    <div class="stage-badge">
+      <span class="stage-dot"></span>
+      Stage · 3 mois · Avril – Juillet 2026
+    </div>
+
+    <a href="#coordonnees" class="contacter-btn" id="contacterBtn">
+      <span class="c-line"></span>
+      <span>Contacter</span>
+    </a>
+
+    <div class="cv-card" id="cvCard">
+      <iframe src="Cv-harsen1.pdf#toolbar=0&navpanes=0&scrollbar=0" title="CV Harsen Schmidt"></iframe>
+      <div class="cv-hover-label">
+        <span>Harsen Schmidt — Designer Graphique</span>
+      </div>
+    </div>
+
+    <a href="Cv-harsen1.pdf" download="Cv-harsen1.pdf" class="download-btn">
+      <span class="dl-line"></span>
+      <span>Télécharger le CV</span>
+    </a>
+
+  </div>
+
+  <!-- COLONNE DROITE : coordonnées -->
+  <div class="col-right" id="coordonnees">
+
+    <p class="col-label">Coordonnées</p>
+
+    <div class="info-list">
+
+      <div class="info-row" style="animation-delay:.35s">
+        <span class="info-key">Téléphone</span>
+        <span class="info-val"><a href="tel:0664812902">06 64 81 29 02</a></span>
+      </div>
+
+      <div class="info-row" style="animation-delay:.45s">
+        <span class="info-key">Email</span>
+        <span class="info-val"><a href="mailto:harsen.schmidtk95@gmail.com">harsen.schmidtk95@gmail.com</a></span>
+      </div>
+
+      <div class="info-row" style="animation-delay:.55s">
+        <span class="info-key">Instagram</span>
+        <span class="info-val"><a href="https://instagram.com/Hars.3n" target="_blank" rel="noopener">@Hars.3n</a></span>
+      </div>
+
+      <div class="info-row" style="animation-delay:.65s">
+        <span class="info-key">Formation</span>
+        <span class="info-val">2e année DNMADe — L'Initiative Paris</span>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<footer>
+  <p>&copy; <span id="year"></span> Harsen Schmidt</p>
+  <p>Designer Graphique</p>
+</footer>
+
+<script>
+document.getElementById('year').textContent = new Date().getFullYear();
+
+/* CURSOR */
+var cur = document.getElementById('cursor');
+var mx=0,my=0,cx=0,cy=0;
+document.addEventListener('mousemove',function(e){mx=e.clientX;my=e.clientY;});
+(function raf(){cx+=(mx-cx)*.18;cy+=(my-cy)*.18;cur.style.left=cx+'px';cur.style.top=cy+'px';requestAnimationFrame(raf);})();
+
+document.querySelectorAll('a,.burger').forEach(function(el){
+  el.addEventListener('mouseenter',function(){cur.classList.add('link-mode');});
+  el.addEventListener('mouseleave',function(){cur.classList.remove('link-mode');});
+});
+
+/* BURGER */
+var burger=document.getElementById('burger');
+var navPanel=document.getElementById('navPanel');
+var overlay=document.getElementById('overlay');
+function toggleNav(f){
+  var open=f!==undefined?f:!burger.classList.contains('open');
+  burger.classList.toggle('open',open);
+  navPanel.classList.toggle('open',open);
+  overlay.classList.toggle('active',open);
+}
+burger.addEventListener('click',function(){toggleNav();});
+overlay.addEventListener('click',function(){toggleNav(false);});
+navPanel.querySelectorAll('a').forEach(function(l){l.addEventListener('click',function(){toggleNav(false);});});
+
+/* BIG NAME */
+(function(){
+  var el=document.getElementById('bigName');
+  'Contact'.split('').forEach(function(ch){
+    var s=document.createElement('span');
+    s.className='letter';s.textContent=ch;
+    el.appendChild(s);
+  });
+})();
+
+/* CONTACTER scroll */
+document.getElementById('contacterBtn').addEventListener('click',function(e){
+  e.preventDefault();
+  document.getElementById('coordonnees').scrollIntoView({behavior:'smooth'});
+});
+
+/* MARQUEE on CV hover */
+var marqueeEl=document.getElementById('marquee');
+var mq1=document.getElementById('mq1');
+var mq2=document.getElementById('mq2');
+var cvCard=document.getElementById('cvCard');
+
+cvCard.addEventListener('mouseenter',function(){
+  var t='Harsen Schmidt — Designer Graphique — Stage Avril–Juillet 2026    ';
+  t=t.repeat(4);
+  mq1.textContent=t; mq2.textContent=t;
+  marqueeEl.classList.add('visible');
+  cur.classList.add('big');
+});
+cvCard.addEventListener('mouseleave',function(){
+  marqueeEl.classList.remove('visible');
+  cur.classList.remove('big');
+});
+</script>
+</body>
+</html>
