@@ -6,7 +6,7 @@
 
 <script>
 var PROJECT = {
-  title:    "Mouvement de la typographie",
+  title:    "Mouvement\nde la typographie",
   subtitle: "Corpus de recherche",
   year:     "2026",
 
@@ -355,7 +355,7 @@ main{padding-top:var(--hh);width:60%;}
 /* ══════════════════════════════════════════════════════
    INIT
    ══════════════════════════════════════════════════════ */
-document.title = PROJECT.title + ' — Harsen Schmidt';
+document.title = PROJECT.title.replace('\n', ' ') + ' — Harsen Schmidt';
 document.getElementById('heroNumber').textContent = PROJECT.year;
 document.getElementById('footerYear').textContent  = PROJECT.year;
 
@@ -385,7 +385,7 @@ function showPreview(src){
   previewInner.innerHTML = '';
   previewInner.appendChild(img);
   previewInner.classList.add('visible');
-  var t = (PROJECT.title + ' — ' + PROJECT.year + '    ').repeat(6);
+  var t = (PROJECT.title.replace('\n', ' ') + ' — ' + PROJECT.year + '    ').repeat(6);
   mq1.textContent = t; mq2.textContent = t;
   marqueeEl.classList.add('visible');
   cur.classList.add('big');
@@ -400,17 +400,25 @@ function hidePreview(){
 (function(){
   var el = document.getElementById('projectTitleEl');
   el.innerHTML = '';
-  PROJECT.title.split('').forEach(function(ch){
-    if(ch === ' '){
-      var sp = document.createElement('span');
-      sp.style.cssText = 'display:inline-block;width:.25em;';
-      el.appendChild(sp);
-    } else {
-      var s = document.createElement('span');
-      s.className = 'letter';
-      s.textContent = ch;
-      el.appendChild(s);
+  /* Découpe sur \n pour gérer les sauts de ligne forcés */
+  var lines = PROJECT.title.split('\n');
+  lines.forEach(function(line, li){
+    if(li > 0){
+      var br = document.createElement('br');
+      el.appendChild(br);
     }
+    line.split('').forEach(function(ch){
+      if(ch === ' '){
+        var sp = document.createElement('span');
+        sp.style.cssText = 'display:inline-block;width:.25em;';
+        el.appendChild(sp);
+      } else {
+        var s = document.createElement('span');
+        s.className = 'letter';
+        s.textContent = ch;
+        el.appendChild(s);
+      }
+    });
   });
   document.getElementById('projectSubEl').textContent = PROJECT.subtitle;
 })();
