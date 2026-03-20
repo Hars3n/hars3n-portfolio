@@ -13,7 +13,7 @@ var PROJECT = {
   imgDir:   "",
   imgNames: [
     "carte-v2.jpg","carte-v4.jpg","carte-v5.jpg",
-    "carte-v6.jpg","carte-v7.jpg"
+    "carte-v6.jpg","carte-v7.jpg","carte-v1.jpg"
   ],
 
   intro: "Carte de visite.",
@@ -426,10 +426,13 @@ function hidePreview(){
   var sec = document.getElementById('descSection');
   PROJECT.paragraphs.forEach(function(raw){
     var p = document.createElement('p');
-    raw.split('//').forEach(function(part){
+    /* Normalise : s'assure que chaque // img:... // est bien entouré d'espaces */
+    var normalized = raw.replace(/\/\//g, ' // ').replace(/\s{2,}/g, ' ').trim();
+    normalized.split('//').forEach(function(part){
       part = part.trim();
       if(part.startsWith('img:')){
         var filename = part.slice(4).trim();
+        if(!filename) return;
         var src = (filename.indexOf('/') === -1) ? PROJECT.imgDir + filename : filename;
         p.appendChild(document.createTextNode(' '));
         var img = document.createElement('img');
