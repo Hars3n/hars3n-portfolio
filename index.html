@@ -20,6 +20,7 @@ body{
   font-family:var(--font);font-weight:var(--w-r);
   overflow-x:hidden;cursor:none;
   -webkit-font-smoothing:antialiased;
+  user-select:none;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;
 }
 
 /* CURSOR */
@@ -276,7 +277,9 @@ var PROJECTS = [
   {id:3, title:"Carte de visite",                         date:"2026",      sub:"Pap\u00e9terie",                                                                                                            page:"carte.html"},
   {id:4, title:"Du visible au lisible",                   date:"2025/2026", sub:"R\u00e9aliser la m\u00e9diation d'une exposition\u00a0: Affiche\u00a0/ catalogue\u00a0/ objet de m\u00e9diation",         page:"du-visible-au-lisible.html"},
   {id:5, title:"Cycadia typographie",                     date:"2025",      sub:"Typographie modulaire",                                                                                                     page:"cycadia.html"},
-  {id:6, title:"3251W typographie",                       date:"2025",      sub:"Typographie modulaire",                                                                                                     page:"romantype.html"}
+  {id:6, title:"3251W typographie",                       date:"2025",      sub:"Typographie modulaire",                                                                                                     page:"romantype.html"},
+  {id:7, title:"Plaque au dragon",                        date:"2025",      sub:"Jeu de soci\u00e9t\u00e9 / objet de m\u00e9diation culturelle",                                                            page:"plaque-dragon.html"},
+  {id:8, title:"Zoetrope",                                date:"2026",      sub:"Animation",                                                                                                                 page:"zoetrope.html"}
 ];
 
 /* CURSOR */
@@ -328,17 +331,18 @@ function buildName(){
 }
 buildName();
 
-/* BIO */
-function antiOrphan(t){return t.replace(/ (\S{1,4})(?= )/g,function(_,w){return '\u00a0'+w;});}
+/* BIO — lignes séparées par / */
 function buildBio(){
   var el=document.getElementById('bioText');el.innerHTML='';
   var raw=[
-    "Je suis \u00e9tudiant en deuxi\u00e8me ann\u00e9e de design graphique \u00e0 l'Initiative Paris, \u00e0 travers ce site je souhaite vous pr\u00e9senter les projets que j'ai pu r\u00e9aliser et qui me tiennent \u00e0 c\u0153ur ainsi que mon univers et ce qui me pla\u00eet dans le graphisme.",
+    "Je suis \u00e9tudiant en deuxi\u00e8me ann\u00e9e de design graphique \u00e0 l\u2019Initiative Paris,",
+    "\u00e0 travers ce site je souhaite vous pr\u00e9senter les projets que j\u2019ai pu r\u00e9aliser et qui me tiennent \u00e0 c\u0153ur ainsi que mon univers",
+    "et ce qui me pla\u00eet dans le graphisme.",
     "Je vous souhaite une bonne visite\u00a0:)"
   ];
   raw.forEach(function(line,li){
     if(li>0){var nl=document.createElement('span');nl.className='nl';el.appendChild(nl);}
-    antiOrphan(line).split(' ').forEach(function(word,wi){
+    line.split(' ').forEach(function(word,wi){
       if(wi>0)el.appendChild(document.createTextNode(' '));
       var ws=document.createElement('span');ws.style.cssText='display:inline-block;white-space:nowrap;';
       Array.from(word).forEach(function(ch){
@@ -365,26 +369,16 @@ var mq2 = document.getElementById('mq2');
 var previewEls = {};
 PROJECTS.forEach(function(p){
 
-  /* ── Projet 1 : Larmes de crocodile ──
-     croco1.jpg pleine largeur en haut
-     croco2.jpg + croco3.jpg côte à côte en dessous */
   if(p.id === 1){
     var wrap = document.createElement('div');
     wrap.className = 'custom-wrap';
-
     var topImg = document.createElement('img');
-    topImg.src = 'croco1.jpg';
-    topImg.alt = 'Larmes de crocodile';
-    topImg.className = 'top-img';
-
-    var row = document.createElement('div');
-    row.className = 'portrait-row';
+    topImg.src = 'croco1.jpg'; topImg.alt = 'Larmes de crocodile'; topImg.className = 'top-img';
+    var row = document.createElement('div'); row.className = 'portrait-row';
     var r1 = document.createElement('img'); r1.src='croco2.jpg'; r1.alt='';
     var r2 = document.createElement('img'); r2.src='croco3.jpg'; r2.alt='';
     row.appendChild(r1); row.appendChild(r2);
-
-    wrap.appendChild(topImg);
-    wrap.appendChild(row);
+    wrap.appendChild(topImg); wrap.appendChild(row);
     previewEls[p.id] = wrap;
 
   } else if(p.id === 2){
@@ -436,7 +430,7 @@ PROJECTS.forEach(function(p){
     previewEls[p.id] = wrap;
 
   } else {
-    /* Projet 4 — image simple depuis img/ */
+    /* Projets sans aperçu personnalisé (4, 7, 8) */
     var img = document.createElement('img');
     img.src = 'img/project' + p.id + '.jpg';
     img.alt = p.title;
