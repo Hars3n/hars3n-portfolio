@@ -79,42 +79,43 @@ main{padding-top:var(--hh);}
 #previewPanel{
   position:fixed;
   top:50%;right:0;
-  width:38%;
+  width:38vw;
+  max-width:680px;
   transform:translateY(-50%);
   display:flex;align-items:center;justify-content:center;
   pointer-events:none;
   z-index:200;
 }
 #previewInner{
-  width:82%;
+  width:86%;
   opacity:0;
   transition:opacity .4s ease;
 }
 #previewInner.visible{opacity:1;}
 
 #previewInner > img{
-  width:100%;object-fit:contain;max-height:70vh;display:block;
+  width:100%;object-fit:contain;max-height:72vh;display:block;
 }
 #previewInner .custom-wrap{
-  display:flex;flex-direction:column;gap:10px;width:100%;
+  display:flex;flex-direction:column;gap:1vw;width:100%;
 }
 #previewInner .custom-wrap .top-img{
-  width:100%;object-fit:cover;height:200px;display:block;
+  width:100%;object-fit:cover;height:22vh;min-height:140px;display:block;
 }
 #previewInner .custom-wrap .portrait-row{
-  display:flex;gap:10px;width:100%;
+  display:flex;gap:1vw;width:100%;
 }
 #previewInner .custom-wrap .portrait-row img{
-  flex:1;min-width:0;object-fit:cover;height:200px;display:block;
+  flex:1;min-width:0;object-fit:cover;height:22vh;min-height:140px;display:block;
 }
 #previewInner .custom-wrap .triple-row{
-  display:flex;gap:10px;width:100%;
+  display:flex;gap:1vw;width:100%;
 }
 #previewInner .custom-wrap .triple-row img{
-  flex:1;min-width:0;object-fit:cover;height:240px;display:block;
+  flex:1;min-width:0;object-fit:cover;height:26vh;min-height:160px;display:block;
 }
 #previewInner .custom-wrap .caption{
-  font-size:11px;font-weight:300;color:#111;
+  font-size:clamp(10px,.8vw,12px);font-weight:300;color:#111;
   text-align:center;line-height:1.7;
 }
 #previewInner .custom-wrap .caption a{
@@ -125,7 +126,7 @@ main{padding-top:var(--hh);}
 
 /* HERO */
 .hero{min-height:100vh;display:flex;align-items:center;}
-.hero-left{width:60%;padding:90px var(--pad);display:flex;flex-direction:column;justify-content:center;}
+.hero-left{width:100%;padding:90px var(--pad);display:flex;flex-direction:column;justify-content:center;}
 
 /* BIG NAME */
 .big-name{
@@ -134,7 +135,7 @@ main{padding-top:var(--hh);}
   letter-spacing:-.03em;line-height:.95;
   margin-bottom:52px;cursor:none;user-select:none;overflow:hidden;
 }
-.big-name .word{display:inline-block;white-space:nowrap;overflow:hidden;}
+.big-name .word{display:inline-block;white-space:nowrap;}
 .big-name .letter{
   display:inline-block;
   transition:transform .35s cubic-bezier(.22,1,.36,1),font-weight .35s ease,font-style .35s ease,letter-spacing .35s ease;
@@ -142,7 +143,7 @@ main{padding-top:var(--hh);}
 }
 
 /* BIO */
-.bio{font-weight:var(--w-r);font-size:clamp(18px,1.9vw,24px);line-height:1.7;max-width:520px;overflow-wrap:break-word;}
+.bio{font-weight:var(--w-r);font-size:clamp(18px,1.9vw,24px);line-height:1.7;max-width:58vw;overflow-wrap:break-word;}
 .bio .bchar{display:inline-block;transition:transform .25s cubic-bezier(.22,1,.36,1),opacity .25s ease;}
 .bio .bchar.lifted{transform:translateY(-5px);opacity:.22;}
 .bio .nl{display:block;margin-top:.55em;}
@@ -189,9 +190,9 @@ main{padding-top:var(--hh);}
 @keyframes marquee{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
 
 /* INTRO ANIM */
-.intro-line{overflow:hidden;display:block;}
+.intro-line{display:inline;}
 .intro-word{display:inline-block;animation:wordIn .7s cubic-bezier(.22,1,.36,1) both;}
-@keyframes wordIn{from{transform:translateY(110%);opacity:0;}to{transform:translateY(0);opacity:1;}}
+@keyframes wordIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
 
 /* MOBILE */
 @media(max-width:768px){
@@ -202,7 +203,7 @@ main{padding-top:var(--hh);}
   .hero{min-height:auto;}
   .hero-left{width:100%;padding:48px var(--pad) 56px;}
   .big-name{font-size:clamp(36px,11vw,52px);margin-bottom:28px;}
-  .bio{font-size:17px;max-width:100%;}
+  .bio{font-size:17px;max-width:100%;width:100%;}
   #projets{padding:60px 0 80px;}
   .projects-inner{width:100%;padding:0 var(--pad);}
   .project-item{cursor:pointer;}
@@ -257,7 +258,7 @@ main{padding-top:var(--hh);}
       <div class="info-block">
         2e année de DNMADe Graphisme – Spécialité parcours d'interaction<br>
         L'Initiative Paris, 2024–2026<br>
-        <a href="mailto:contact@harsen-schmidt.com">contact@harsen-schmidt.com</a> – <a href="https://instagram.com/hars.3n" target="_blank">@hars.3n</a>
+        <a href="/cdn-cgi/l/email-protection#12717d7c66737166527a736061777c3f61717a7f7b76663c717d7f"><span class="__cf_email__" data-cfemail="fc9f9392889d9f88bc949d8e8f9992d18f9f9491959888d29f9391">[email&#160;protected]</span></a> – <a href="https://instagram.com/hars.3n" target="_blank">@hars.3n</a>
       </div>
     </div>
   </section>
@@ -270,7 +271,7 @@ main{padding-top:var(--hh);}
   </section>
 </main>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 var PROJECTS = [
   {id:1, title:"Larmes de crocodile",                     date:"2025",      sub:"Affiche de th\u00e9\u00e2tre",                                                                                              page:"croco.html"},
   {id:2, title:"Mouvement de la typographie et rotation", date:"2026",      sub:"Corpus de recherches",                                                                                                      page:"corpus.html"},
@@ -477,12 +478,4 @@ function buildProjects(){
 buildProjects();
 
 /* SCROLL parallax */
-window.addEventListener('scroll',function(){
-  var y = window.scrollY;
-  var name = document.getElementById('bigName');
-  name.style.transform = 'translateY('+(y*.12)+'px)';
-  name.style.opacity = Math.max(0,1-y/420);
-},{passive:true});
-</script>
-</body>
-</html>
+window
