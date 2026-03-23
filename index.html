@@ -133,7 +133,7 @@ main{padding-top:var(--hh);}
   font-weight:var(--w-m);
   font-size:clamp(48px,5.8vw,86px);
   letter-spacing:-.03em;line-height:.95;
-  margin-bottom:52px;cursor:none;user-select:none;overflow:hidden;
+  margin-bottom:52px;cursor:none;user-select:none;
 }
 .big-name .word{display:inline-block;white-space:nowrap;}
 .big-name .letter{
@@ -191,8 +191,7 @@ main{padding-top:var(--hh);}
 
 /* INTRO ANIM */
 .intro-line{display:inline;}
-.intro-word{display:inline-block;animation:wordIn .7s cubic-bezier(.22,1,.36,1) both;}
-@keyframes wordIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+.intro-word{display:inline-block;}
 
 /* MOBILE */
 @media(max-width:768px){
@@ -258,7 +257,7 @@ main{padding-top:var(--hh);}
       <div class="info-block">
         2e année de DNMADe Graphisme – Spécialité parcours d'interaction<br>
         L'Initiative Paris, 2024–2026<br>
-        <a href="/cdn-cgi/l/email-protection#12717d7c66737166527a736061777c3f61717a7f7b76663c717d7f"><span class="__cf_email__" data-cfemail="fc9f9392889d9f88bc949d8e8f9992d18f9f9491959888d29f9391">[email&#160;protected]</span></a> – <a href="https://instagram.com/hars.3n" target="_blank">@hars.3n</a>
+        <a href="mailto:contact@harsen-schmidt.com">contact@harsen-schmidt.com</a> – <a href="https://instagram.com/hars.3n" target="_blank">@hars.3n</a>
       </div>
     </div>
   </section>
@@ -271,7 +270,7 @@ main{padding-top:var(--hh);}
   </section>
 </main>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
 var PROJECTS = [
   {id:1, title:"Larmes de crocodile",                     date:"2025",      sub:"Affiche de th\u00e9\u00e2tre",                                                                                              page:"croco.html"},
   {id:2, title:"Mouvement de la typographie et rotation", date:"2026",      sub:"Corpus de recherches",                                                                                                      page:"corpus.html"},
@@ -314,14 +313,16 @@ var LETTER_VARIANTS=[
 ];
 function buildName(){
   var el=document.getElementById('bigName');
+  if(!el) return;
   el.innerHTML='';
   var words="Harsen Schmidt".split(' ');
   words.forEach(function(word,wi){
     if(wi>0){var sp=document.createElement('span');sp.style.cssText='display:inline-block;width:.28em;';el.appendChild(sp);}
-    var ww=document.createElement('span');ww.className='word intro-line';
-    word.split('').forEach(function(ch,ci){
-      var s=document.createElement('span');s.className='letter intro-word';
-      s.style.animationDelay=(wi*word.length+ci)*.04+'s';s.textContent=ch;
+    var ww=document.createElement('span');ww.style.cssText='display:inline-block;white-space:nowrap;';
+    Array.from(word).forEach(function(ch){
+      var s=document.createElement('span');
+      s.style.cssText='display:inline-block;transition:transform .35s,font-weight .35s,font-style .35s,letter-spacing .35s;';
+      s.textContent=ch;
       s.addEventListener('mouseenter',function(){s.style.transform='translateY(-8px)';s.style.fontWeight='300';s.style.fontStyle='italic';s.style.letterSpacing='.04em';});
       s.addEventListener('mouseleave',function(){s.style.transform='';s.style.fontWeight='';s.style.fontStyle='';s.style.letterSpacing='';});
       s.addEventListener('click',function(){var v=LETTER_VARIANTS[Math.floor(Math.random()*LETTER_VARIANTS.length)];s.style.fontWeight=v.w;s.style.fontStyle=v.s;});
@@ -334,25 +335,18 @@ buildName();
 
 /* BIO — lignes séparées par / */
 function buildBio(){
-  var el=document.getElementById('bioText');el.innerHTML='';
-  var raw=[
-    "Je suis \u00e9tudiant en deuxi\u00e8me ann\u00e9e de design graphique \u00e0 l\u2019Initiative Paris,",
-    "\u00e0 travers ce site je souhaite vous pr\u00e9senter les projets que j\u2019ai pu r\u00e9aliser et qui me tiennent \u00e0 c\u0153ur ainsi que mon univers",
-    "et ce qui me pla\u00eet dans le graphisme.",
-    "Je vous souhaite une bonne visite\u00a0:)"
+  var el=document.getElementById('bioText');
+  if(!el) return;
+  el.innerHTML='';
+  var lines=[
+    "Je suis étudiant en deuxième année de design graphique à l’Initiative Paris,",
+    "à travers ce site je souhaite vous présenter les projets que j’ai pu réaliser et qui me tiennent à cœur ainsi que mon univers",
+    "et ce qui me plaît dans le graphisme.",
+    "Je vous souhaite une bonne visite :)"
   ];
-  raw.forEach(function(line,li){
-    if(li>0){var nl=document.createElement('span');nl.className='nl';el.appendChild(nl);}
-    line.split(' ').forEach(function(word,wi){
-      if(wi>0)el.appendChild(document.createTextNode(' '));
-      var ws=document.createElement('span');ws.style.cssText='display:inline-block;white-space:nowrap;';
-      Array.from(word).forEach(function(ch){
-        var s=document.createElement('span');s.className='bchar';s.textContent=ch;
-        s.addEventListener('mouseenter',function(){s.classList.add('lifted');setTimeout(function(){s.classList.remove('lifted');},350);});
-        ws.appendChild(s);
-      });
-      el.appendChild(ws);
-    });
+  lines.forEach(function(line,li){
+    if(li>0){var br=document.createElement('br');el.appendChild(br);}
+    el.appendChild(document.createTextNode(line));
   });
 }
 buildBio();
