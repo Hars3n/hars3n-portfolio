@@ -195,6 +195,16 @@ PROJECTS.forEach(function(p){
     wrap.appendChild(topImg); wrap.appendChild(row);
     previewEls[p.id] = wrap;
 
+  } else if(p.id === 7){
+    var wrap = document.createElement('div'); wrap.className='custom-wrap';
+    var topImg = document.createElement('img'); topImg.src='dragon.jpg'; topImg.alt='Plaque au dragon'; topImg.className='top-img';
+    var row = document.createElement('div'); row.className='portrait-row';
+    var pm1 = document.createElement('img'); pm1.src='dragon1.jpg'; pm1.alt='';
+    var pm2 = document.createElement('img'); pm2.src='dragon2.jpg'; pm2.alt='';
+    row.appendChild(pm1); row.appendChild(pm2);
+    wrap.appendChild(topImg); wrap.appendChild(row);
+    previewEls[p.id] = wrap;
+
   } else {
     var img = document.createElement('img');
     img.src = 'img/project'+p.id+'.jpg';
