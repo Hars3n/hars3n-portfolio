@@ -108,8 +108,23 @@ function buildBio(){
     "Je vous souhaite une bonne visite\u00a0:)"
   ];
   lines.forEach(function(line, li){
-    if(li > 0){ el.appendChild(document.createElement('br')); }
-    el.appendChild(document.createTextNode(line));
+    if(li > 0){
+      el.appendChild(document.createElement('br'));
+    }
+    Array.from(line).forEach(function(ch){
+      var s = document.createElement('span');
+      s.style.cssText = 'display:inline-block;transition:transform .25s,font-style .25s;';
+      s.textContent = (ch === ' ') ? '\u00a0' : ch;
+      s.addEventListener('mouseenter', function(){
+        s.style.transform = 'translateY(-6px)';
+        s.style.fontStyle = 'italic';
+      });
+      s.addEventListener('mouseleave', function(){
+        s.style.transform = '';
+        s.style.fontStyle = '';
+      });
+      el.appendChild(s);
+    });
   });
 }
 buildBio();
