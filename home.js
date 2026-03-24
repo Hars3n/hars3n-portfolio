@@ -4,7 +4,7 @@ var PROJECTS = [
   {id:3, title:"Carte de visite",                         date:"2026",      sub:"Pap\u00e9terie",                                                          page:"carte.html"},
   {id:4, title:"Du visible au lisible",                   date:"2025/2026", sub:"R\u00e9aliser la m\u00e9diation d\u2019une exposition\u00a0: Affiche\u00a0/ catalogue\u00a0/ objet de m\u00e9diation", page:"du-visible-au-lisible.html"},
   {id:5, title:"Cycadia typographie",                     date:"2025",      sub:"Typographie modulaire",                                                   page:"cycadia.html"},
-  {id:6, title:"3251W typographie",                       date:"2025",      sub:"Typographie modulaire",                                                   page:"romantype.html"},
+  {id:6, title:"3251W typographie",                       date:"2025",      sub:"Typographie modulaire",                                                   page:"romanetype.html"},
   {id:7, title:"Plaque au dragon",                        date:"2025",      sub:"Jeu de soci\u00e9t\u00e9 / objet de m\u00e9diation culturelle",          page:"plaque-dragon.html"},
   {id:8, title:"Zoetrope",                                date:"2026",      sub:"Animation",                                                               page:"zoetrope.html"}
 ];
